@@ -44,7 +44,7 @@ echo '
    |      r  * 重启服务器        ini  * 配置php.ini      ----  * 功能开发中    |
    |    add  * 添加新站点       ----  * 功能开发中       ----  * 功能开发中    |
    |   sset  * 手动配置站点*    ----  * 功能开发中       ----  * 功能开发中    |
-   |    ssl  * 配置ssl证书      live  * 开始直播         ----  * 功能开发中    |
+   |    ssl  * 配置ssl证书      live  * 开始直播        clean  * 清理服务器    |
    |    sql  * SQL功能列表     lived  * 结束直播        chown  * 重置网站权限  |
    |     ss  * SS-VPN管理工具*  ----  * 功能开发中        dnc  * 批量改域名*   |
    |   list  * 查看网站列表     ----  * 功能开发中       tmgr  * 系统状态      |
@@ -456,6 +456,36 @@ giton()(    ##启用本地代码托管（未完成）
 echo '正在编写'
 echo '未完成'
 )
+
+clean()(
+    echo 本操作将会清理所有网站目录/数据库/ftp信息，同时卸载nginx环境/php环境/mysql环境/sqlite环境
+    echo 不会删除控制面板文件，适合打算初始化服务器的情景使用
+    echo 请确定已完成数据/文件备份
+    echo 操作将不可逆，重新执行本面板的相关功能将会重新安装所需功能，所有设置都将初始化（包括数据库用户信息）
+    read -e -p "即便如此也要进行这个操作？默认为No，确定请输入小写yes[yes/NO]"   SL ##询问是否
+    echo "$SL" | grep -q -E 'yes' && {   ##满足
+        read -e -p "真的要进行这个操作？真的是不可逆的操作！！！[确定请输入本面板的管理授权密码：yuki233.com]"   SL ##询问是否
+        test "$SL" = "yuki233.com" && {   ##满足
+            read -e -p "这将是最后一遍确认，真的确定要执行？确定请输入现在的时间（2位小时数）[24小时制]"   SL ##询问
+            time=`date +%H`
+            test "$SL" = "$time" && {   ##满足
+            echo 即将删除
+            apt autoremove -y *nginx* php* mysql*
+            echo 程序已卸载完成
+            rm -rf $WR
+            echo 已删除默认站点目录$WR下的所有文件
+            rm -rf $NGSR/sites-enabled/
+            echo 已释放域名绑定
+            rm -rf /var/lib/mysql/
+            echo 已清空数据库
+            rm -rf $NGSR/yukicpl_check_point
+            echo 已更新面板检查点
+            echo 面板清理已完成，本面板将会自动退出，如有需要可手动执行“rm -f /usr/local/bin/[本面板的文件名]“彻底移除本面板
+            quit
+            }
+        }
+    }
+    )
 
 chown()(
     echo 使用本工具可以重置所有在$WR文件夹中的文件的所属权限归www所有
