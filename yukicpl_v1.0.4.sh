@@ -409,8 +409,8 @@ OOO
         echo '将不配置www页面'
             } || {
                 add
-
             }
+    }
     cd $LP/MonaServer-master/MonaServer/MonaServer
     ./MonaServer -d
 )
