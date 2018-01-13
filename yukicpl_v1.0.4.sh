@@ -39,7 +39,7 @@ echo '
     /////////////////////////[  初雪服务器控制面板  ]\\\\\\\\\\\\\\\\\\\\\\\\\\
     **************************[ Yuki Control Panel ]***************************
     ===========================================================================
-   |      o  * 开启服务器       ----  * 功能开发中      giton  * 启动代码托管* |
+   |      o  * 开启服务器       sqlf  * 数据库状态      giton  * 启动代码托管* |
    |      s  * 关闭服务器        php  * 查看php版本      ----  * 功能开发中    |
    |      r  * 重启服务器        ini  * 配置php.ini      ----  * 功能开发中    |
    |    add  * 添加新站点       ----  * 功能开发中       ----  * 功能开发中    |
@@ -257,19 +257,16 @@ sql()(      ##SQL服务器管理界面（未完成）
 sqlo()(     ##启动sql
     echo 启动sql
     service mysqld start
-    service mysqld status
 )
 
 sqls()(   ##停止sql
     echo 停止sql
     service mysqld stop
-    service mysqld status
 )
 
 sqlr()(   ##重启sql
     echo 重启sql
     service mysqld restart
-    service mysqld status
 )
 
 sqlb()(   ##备份/导出
@@ -378,6 +375,10 @@ del()(      ##移除站点
 
 
 ##第二列内容##
+
+sqlf()(
+    service mysqld status
+)
 
 php()(
     echo 查看 php 版本
