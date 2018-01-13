@@ -29,8 +29,8 @@ NGP="/etc/init.d/nginx"
 ##这是PHP.ini的位置(以"/"开头，以php.ini结尾)
 PI="/etc/php/7.0/fpm/php.ini"
 
-##这里是MonaServer的安装路径(执行文件应在/MonaServer-master/MonaServer，否则请卸载原有版本，会自动部署)，直播用
-LP="/yuki/live"
+##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
+LP="/yuki/live/MonaServer-master/MonaServer"
 
 
 ##程序本体部分~~~
@@ -392,34 +392,46 @@ ini()(      ##打开php.ini
 )
 
 live()(     ##开启直播服务器
-    test -e $LP/MonaServer-master/MonaServer/MonaServer || {
-        grep -q "^deb-src" /etc/apt/sources.list || cat >> /etc/apt/sources.list <<OOO
-deb-src http://ftp.jp.debian.org/debian/ stretch main non-free
-deb-src http://security.debian.org/debian-security stretch/updates main non-free
-deb-src http://ftp.jp.debian.org/debian/ stretch-updates main non-free
-deb-src http://ftp.jp.debian.org/debian/ stretch-backports main non-free
-OOO
-        apt update
-        ## libssl-dev 和 libssl1.0-dev 不能共存
-        apt install -y  luajit libluajit-5.1-dev  libssl1.0-dev
-        apt build-dep -y luajit libluajit-5.1-dev  libssl1.0-dev
+    test -e $LP/MonaServer && { ##如果安装了mona直播服务
         cd $LP
-        wget https://github.com/MonaSolutions/MonaServer/archive/master.zip
-        unzip master.zip
-        cd MonaServer-master
-        make
+        ./MonaServer -d
+    } || {  ##没有安装直播服务
+        test -a /usr/lib/nginx/modules/ngx_rtmp_module.so || {  #检查nginx直播服务安装状态，如未安装
+            apt install libnginx-mod-rtmp -t stretch-backports
+        }
+        grep -q "rtmp" /etc/nginx/nginx.conf || cat >> /etc/nginx/nginx.conf <<OOO
+rtmp {
+    server {
+        listen 1935;
+        application live {
+            live on;
+        }
     }
-
-        read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL
+}
+OOO
+    ##修改nginx的配置为[可直播]
+    }
+    test -e $NGSR/yukicpl_check_point/.livesite || {  ##检查直播网站文件是否存在
+        read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL ##询问是否需要
         echo "$SL" | grep -q -E '^[Nn]$' && {   ##满足否
         echo '将不配置www页面'
-            } || {
-                add
-
+            } || {  ##需要
+                ret='add | tee /dev/stderr'
+                site_dir=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '\/[0-9a-zA-Z./]*'`
+                livesite=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '[0-9a-zA-Z.]*' | head -1`
+                mkdir -p "$NGSR/yukicpl_check_point"    ##记录检查点
+                cat > "$NGSR/yukicpl_check_point/.livesite" << OOO
+ready
+直播站点 web 目录位于 $site_dir
+直播站点绑定的域名是：$livesite
+OOO
+                cd $site_dir    ##转入站点目录
+                echo 未部署站点程序
             }
-    
-    cd $LP/MonaServer-master/MonaServer/MonaServer
-    ./MonaServer -d
+    }
+    r
+    echo 启动成功
+    grep -h 直播站点 "$NGSR/yukicpl_check_point/.livesite"
 )
 
 list()(     ##查看已启用站点列表
