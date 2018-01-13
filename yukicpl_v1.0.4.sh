@@ -44,8 +44,8 @@ echo '
    |      r  * 重启服务器        ini  * 配置php.ini      ----  * 功能开发中    |
    |    add  * 添加新站点       ----  * 功能开发中       ----  * 功能开发中    |
    |   sset  * 手动配置站点*    ----  * 功能开发中       ----  * 功能开发中    |
-   |    ssl  * 配置ssl证书      live  * 开始直播*        ----  * 功能开发中    |
-   |    sql  * SQL功能列表     lived  * 结束直播*       chown  * 重置网站权限  |
+   |    ssl  * 配置ssl证书      live  * 开始直播         ----  * 功能开发中    |
+   |    sql  * SQL功能列表     lived  * 结束直播        chown  * 重置网站权限  |
    |     ss  * SS-VPN管理工具*  ----  * 功能开发中        dnc  * 批量改域名*   |
    |   list  * 查看网站列表     ----  * 功能开发中       tmgr  * 系统状态      |
    |    del  * 删除站点         ----  * 功能开发中       quit  * 退出面板      |
@@ -432,6 +432,16 @@ OOO
     r
     echo 启动成功
     grep -h 直播站点 "$NGSR/yukicpl_check_point/.livesite"
+)
+
+lived()(     ##停止直播服务器
+    test -e $LP/MonaServer && { ##如果安装了mona直播服务
+        pkill -f MonaServer
+    } || {  ##没有安装直播服务
+        sed -i '/^rtmp/,/^}/d' /etc/nginx/nginx.conf
+    ##修改nginx的配置为[不可直播]
+    }
+    echo 停止成功
 )
 
 list()(     ##查看已启用站点列表
