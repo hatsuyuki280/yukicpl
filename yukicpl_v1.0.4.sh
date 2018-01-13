@@ -441,6 +441,7 @@ lived()(     ##停止直播服务器
         sed -i '/^rtmp/,/^}/d' /etc/nginx/nginx.conf
     ##修改nginx的配置为[不可直播]
     }
+    r
     echo 停止成功
 )
 
