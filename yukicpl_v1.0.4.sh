@@ -256,17 +256,20 @@ sql()(      ##SQL服务器管理界面（未完成）
 
 sqlo()(     ##启动sql
     echo 启动sql
-
+    service mysqld start
+    service mysqld status
 )
 
 sqls()(   ##停止sql
     echo 停止sql
-
+    service mysqld stop
+    service mysqld status
 )
 
 sqlr()(   ##重启sql
     echo 重启sql
-
+    service mysqld restart
+    service mysqld status
 )
 
 sqlb()(   ##备份/导出
@@ -404,13 +407,16 @@ OOO
         unzip master.zip
         cd MonaServer-master
         make
+    }
+
         read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL
         echo "$SL" | grep -q -E '^[Nn]$' && {   ##满足否
         echo '将不配置www页面'
             } || {
                 add
+
             }
-    }
+    
     cd $LP/MonaServer-master/MonaServer/MonaServer
     ./MonaServer -d
 )
