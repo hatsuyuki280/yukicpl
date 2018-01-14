@@ -180,6 +180,7 @@ OOO
     ## 添加默认的 index.html
     test -a "$WWWDIR/index.html" || test -a "$WWWDIR/index.php" || cp /var/www/html/index.nginx-debian.html "$WWWDIR/index.html"
     echo "## 添加了站点 $SITE ，目录位于 $WWWDIR"
+    ping -c 1 $SITE ##敲击一下dns
     ## https 证书
     ## Let's Encrypt 目前只支持 A 记录验证，不支持 CNAME
     #nslookup $SITE | grep -q 'canonical name' && {
@@ -472,7 +473,7 @@ clean()(
             time=`date +%H`
             test "$SL" = "$time" && {   ##满足
             echo 即将删除
-            apt autoremove -y *nginx* php* mysql*
+            apt autoremove -y *nginx* php* mysql* *certbot*
             echo 程序已卸载完成
             rm -rf $WR
             echo 已删除默认站点目录$WR下的所有文件
@@ -482,6 +483,8 @@ clean()(
             echo 已清空数据库
             rm -rf $NGSR/yukicpl_check_point
             echo 已更新面板检查点
+            rm -rf /etc/letsencrypt/
+            echo 已清理ssl证书配置
             echo 面板清理已完成，本面板将会自动退出，如有需要可手动执行“rm -f /usr/local/bin/[本面板的文件名]“彻底移除本面板
             quit
             }
