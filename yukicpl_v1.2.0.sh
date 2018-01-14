@@ -397,6 +397,8 @@ live()(     ##开启直播服务器
         ./MonaServer -d
     } || {  ##没有安装直播服务
         test -a /usr/lib/nginx/modules/ngx_rtmp_module.so || {  #检查nginx直播服务安装状态，如未安装
+            echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  > /etc/apt/sources.list.d/stretch-backports.list
+            apt update
             apt install libnginx-mod-rtmp -t stretch-backports
         }
         grep -q "rtmp" /etc/nginx/nginx.conf || cat >> /etc/nginx/nginx.conf <<OOO
