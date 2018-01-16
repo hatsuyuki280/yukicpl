@@ -401,16 +401,28 @@ live()(     ##开启直播服务器
             echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  > /etc/apt/sources.list.d/stretch-backports.list
             apt update
             apt install libnginx-mod-rtmp -t stretch-backports
-        }
+        } 
+        rm $NGSR/yukicpl_check_point/.liveadd
+        read -e -p "是否需要同时直播至其他站点？[y/N]"   SL
+        while `echo "$SL" | grep -q -E '^[Yy]$'` ; do  ##是否继续添加
+            cat > "$NGSR/yukicpl_check_point/.livesite" << OOO
+
+OOO
+            read -e -p "是否需要同时直播至其他站点？[y/N]"
+        done
         grep -q "rtmp" /etc/nginx/nginx.conf || cat >> /etc/nginx/nginx.conf <<OOO
 rtmp {
-    server {
-        listen 1935;
-        application live {
-            live on;
-        }
+ server{
+     listen 1935;
+     chunk_size 4096;
+
+     application live {
+           live on;
+           record off;
+           $new_
+          }
     }
-}
+}  
 OOO
     ##修改nginx的配置为[可直播]
     }
