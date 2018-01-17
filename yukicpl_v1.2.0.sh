@@ -400,7 +400,7 @@ live()(     ##开启直播服务器
         test -a /usr/lib/nginx/modules/ngx_rtmp_module.so || {  #检查nginx直播服务安装状态，如未安装
             echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  > /etc/apt/sources.list.d/stretch-backports.list
             apt update
-            apt install libnginx-mod-rtmp -t stretch-backports
+            apt install -y libnginx-mod-rtmp -t stretch-backports
         } 
     }
         rm $NGSR/yukicpl_check_point/.liveadd
@@ -530,10 +530,10 @@ clean()(
             echo 程序已卸载完成
             rm -rf $WR
             echo 已删除默认站点目录$WR下的所有文件
-            rm -rf $NGSR/sites-enabled/
-            echo 已释放域名绑定
             rm -rf /var/lib/mysql/
             echo 已清空数据库
+            rm -rf $NGSR
+            echo Nginx配置文件
             rm -rf $NGSR/yukicpl_check_point
             echo 已更新面板检查点
             rm -rf /etc/letsencrypt/
