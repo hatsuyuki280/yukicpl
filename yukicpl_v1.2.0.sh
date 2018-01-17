@@ -56,8 +56,10 @@ echo '
 
 o()(        ##启用服务器（Ngnix、PHP、[MySQL]、[]）
     _check_nginx
+    echo 启动 MySQL 服务器
+    sqlo
     echo 开启 PHP 服务器
-    $PP restart
+    $PP start
     echo 开启 nginx 服务器
     set -x
     $NGP start
@@ -67,10 +69,14 @@ s()(        ##关闭服务器
     echo 关闭 nginx 服务器
     set -x
     $NGP stop
+    $PP stop
+    sqls
 )
 
 r()(        ##重启服务器
     _check_nginx
+    echo 重启MySQL
+    sqlr
     echo 重启 php
     $PP restart
     echo 重启 nginx 服务器
@@ -527,7 +533,7 @@ clean()(
             test "$SL" = "$time" && {   ##满足
             echo 即将删除
             apt update
-            apt purge -y *nginx* php* mysql* *certbot*
+            apt purge --force-yes -y *nginx* php* mysql* *certbot*
             echo 程序已卸载完成
             apt autoremove -y
             rm -rf $WR
