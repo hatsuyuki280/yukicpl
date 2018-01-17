@@ -94,7 +94,7 @@ add()(      ##添加新站点
                     read -e -p "域名不是很合法，是否使用默认的“$DDN”作为一级域名？[Y/N]"   SL
                     ##提示输入....read -e -p  "提示信息"  变量名字
                 echo "$SL" | grep -q -E '^[YyNn]$' && { ##满足Y或N
-                        echo "$SL" | grep -q -E '^[Yy]$' && {   ##满足Y
+                        test "$SL" = "y" && {   ##满足Y
                             SITE="$DN.$DDN"
                             echo '将使用'$SITE'作为域名创建站点'
                         } || {  ##不满足Y，满足N
@@ -440,7 +440,7 @@ OOO
     }
     test -e $NGSR/yukicpl_check_point/.livesite || {  ##检查直播网站文件是否存在
         read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL ##询问是否需要
-        echo "$SL" | grep -q -E '^[Nn]$' && {   ##满足否
+        test "$SL" = "n" && {   ##满足否
         echo '将不配置www页面'
             } || {  ##需要
                 ret=$(add | tee /dev/stderr)
@@ -502,7 +502,7 @@ timea()( ##修改时区
     timearea=$(date -R)
     echo 当前时区为"$timearea"
     read -e -p "是否要修改当前时区[y/N]"   SL ##询问是否需要
-    echo "$SL" | grep -q -E '^[Yy]$' && {   ##满足是
+    test "$SL" = "y" && {   ##满足是
     dpkg-reconfigure tzdata
     }
 )
@@ -516,7 +516,7 @@ clean()(
     timearea=$(date -R)
     echo 为了顺利执行本面板的清理，请确定当前时区正确（"$timearea"）
     read -e -p "是否要修改当前时区[y/N]"   SL ##询问是否需要
-    echo "$SL" | grep -q -E '^[Yy]$' && {   ##满足是
+    test "$SL" = "y" && {   ##满足是
     dpkg-reconfigure tzdata
     }
     read -e -p "即便如此也要进行这个操作？默认为No，确定请输入小写yes[yes/NO]"   SL ##询问是否
