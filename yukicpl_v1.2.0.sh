@@ -405,9 +405,8 @@ live()(     ##开启直播服务器
         rm $NGSR/yukicpl_check_point/.liveadd
         read -e -p "是否需要同时直播至其他站点？[y/N]"   SL
         while `echo "$SL" | grep -q -E '^[Yy]$'` ; do  ##是否继续添加
-            cat > "$NGSR/yukicpl_check_point/.livesite" << OOO
-
-OOO
+            
+            echo $live_url>>$NGSR/yukicpl_check_point/.livesite
             read -e -p "是否需要同时直播至其他站点？[y/N]"
         done
         grep -q "rtmp" /etc/nginx/nginx.conf || cat >> /etc/nginx/nginx.conf <<OOO
