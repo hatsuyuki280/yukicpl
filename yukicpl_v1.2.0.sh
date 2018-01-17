@@ -402,6 +402,7 @@ live()(     ##开启直播服务器
             apt update
             apt install libnginx-mod-rtmp -t stretch-backports
         } 
+    }
         rm $NGSR/yukicpl_check_point/.liveadd
         read -e -p "是否需要同时直播至其他站点？[y/N]"   SL
         while [ "$SL" = "Y" -o "$SL" = "y" ] ; do  ##是否继续添加
@@ -416,10 +417,10 @@ live()(     ##开启直播服务器
                     break ##离开当前循环&continue=继续循环
                     }
             done
-    }
-    live_url="" ##初始化
-    read -e -p "是否需要同时直播至其他站点？[y/N]"
-    done
+        live_url="" ##初始化
+        read -e -p "是否需要同时直播至其他站点？[y/N]"
+        done
+
     live_url_ok=$(cat $NGSR/yukicpl_check_point/.livesite ) ##将推流列表扔进变量里
     grep -q "rtmp" /etc/nginx/nginx.conf || cat >> /etc/nginx/nginx.conf <<OOO
 rtmp {
