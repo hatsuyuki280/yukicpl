@@ -526,8 +526,10 @@ clean()(
             time=`date +%H`
             test "$SL" = "$time" && {   ##满足
             echo 即将删除
-            apt autoremove -y *nginx* php* mysql* *certbot*
+            apt update
+            apt purge -y *nginx* php* mysql* *certbot*
             echo 程序已卸载完成
+            apt autoremove -y
             rm -rf $WR
             echo 已删除默认站点目录$WR下的所有文件
             rm -rf /var/lib/mysql/
@@ -538,7 +540,7 @@ clean()(
             echo 已更新面板检查点
             rm -rf /etc/letsencrypt/
             echo 已清理ssl证书配置
-            echo 面板清理已完成，本面板将会自动退出，如有需要可手动执行“rm -f /usr/local/bin/[本面板的文件名]“彻底移除本面板
+            echo 面板清理已完成，请输入quit退出本面板，如有需要可手动执行“rm -f /usr/local/bin/[本面板的文件名]“彻底移除本面板
             quit
             }
         }
