@@ -437,7 +437,6 @@ rtmp {
 }  
 OOO
     ##修改nginx的配置为[可直播]
-    }
     test -e $NGSR/yukicpl_check_point/.livesite || {  ##检查直播网站文件是否存在
         read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL ##询问是否需要
         test "$SL" = "n" && {   ##满足否
