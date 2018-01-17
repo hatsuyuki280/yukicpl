@@ -406,8 +406,8 @@ live()(     ##开启直播服务器
         read -e -p "是否需要同时直播至其他站点？[y/N]"   SL
         while [ "$SL" = "Y" -o "$SL" = "y" ] ; do  ##是否继续添加
             while test -z "$live_url" ; do  ##检查$SITE变量是否存在(不存在执行)
-                echo 请输入需要转播的直播站点（rtmp协议，格式如下）
-                echo (直接从直播地址的域名开始)live.example.com/直播码(直播密钥)
+                echo "请输入需要转播的直播站点（rtmp协议，格式如下）"
+                echo "(直接从直播地址的域名开始)live.example.com/直播码(直播密钥)"
                 read -e live_url           
                 echo "$live_url" | grep -q -E '^[.a-zA-Z0-9-/]$' && { ##合法的有效域名
                 echo push rtmp://$live_url>>$NGSR/yukicpl_check_point/.livesite
