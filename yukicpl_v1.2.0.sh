@@ -420,6 +420,7 @@ live()(     ##开启直播服务器
     live_url="" ##初始化
     read -e -p "是否需要同时直播至其他站点？[y/N]"
     done
+    live_url_ok=$(cat $NGSR/yukicpl_check_point/.livesite ) ##将推流列表扔进变量里
     grep -q "rtmp" /etc/nginx/nginx.conf || cat >> /etc/nginx/nginx.conf <<OOO
 rtmp {
  server{
@@ -429,7 +430,7 @@ rtmp {
      application live {
            live on;
            record off;
-           $new_
+           $live_url_ok         ##想把那个文件的内容扔进这里
           }
     }
 }  
