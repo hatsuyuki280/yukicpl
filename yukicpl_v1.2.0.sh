@@ -556,7 +556,6 @@ clean()(
             rm -rf /etc/letsencrypt/
             echo 已清理ssl证书配置
             echo 面板清理已完成，请输入quit退出本面板，如有需要可手动执行“rm -f /usr/local/bin/[本面板的文件名]“彻底移除本面板
-            quit
             }
         }
     }
