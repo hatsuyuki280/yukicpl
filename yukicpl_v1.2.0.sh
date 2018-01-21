@@ -421,7 +421,7 @@ live()(     ##开启直播服务器
                 echo "(直接从直播地址的域名开始)live.example.com/直播码(直播密钥)"
                 read -e live_url           
                 echo "$live_url" | grep -q -E '^[.a-zA-Z0-9-\/]$' && { ##合法的有效域名
-                echo "push rtmp://$live_url;">>$NGSR/yukicpl_check_point/.livesite
+                echo "push rtmp://$live_url;">>$NGSR/yukicpl_check_point/.liveadd
                     } || {  ##不合法的
                     echo 输入的内容不合规范，请再检查一遍并重新输入
                     break ##离开当前循环&continue=继续循环
