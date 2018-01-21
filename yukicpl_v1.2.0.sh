@@ -262,21 +262,25 @@ sql()(      ##SQL服务器管理界面（未完成）
 #### sql 控制面板用指令 ####\
 
 sqlo()(     ##启动sql
-    echo 启动sql
+    echo 正在启动sql
     service mysqld start
+    echo sql服务器已启动
 )
 
 sqls()(   ##停止sql
-    echo 停止sql
+    echo 正在停止sql
     service mysqld stop
+    sql服务器已停止
 )
 
 sqlr()(   ##重启sql
-    echo 重启sql
+    echo 正在重启sql
     service mysqld restart
+    sql服务器已重新启动
 )
 
 sqlb()(   ##备份/导出
+    
     echo 请选择想要备份/导出
 )
 
