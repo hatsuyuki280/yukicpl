@@ -428,7 +428,7 @@ live()(     ##开启直播服务器
                     }
             done
         live_url="" ##初始化
-        read -e -p "是否需要同时直播至其他站点？[y/N]"
+        read -e -p "是否需要同时直播至其他站点？[y/N]" SL
         done
 
     live_url_ok=$(cat $NGSR/yukicpl_check_point/.livesite ) ##将推流列表扔进变量里
