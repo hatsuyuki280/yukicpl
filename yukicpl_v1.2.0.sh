@@ -280,7 +280,7 @@ sqlr()(   ##重启sql
 )
 
 sqlb()(   ##备份/导出
-    
+
     echo 请选择想要备份/导出
 )
 
@@ -420,8 +420,8 @@ live()(     ##开启直播服务器
                 echo "请输入需要转播的直播站点（rtmp协议，格式如下）"
                 echo "(直接从直播地址的域名开始)live.example.com/直播码(直播密钥)"
                 read -e live_url           
-                echo "$live_url" | grep -q -E '^[.a-zA-Z0-9-/]$' && { ##合法的有效域名
-                echo push rtmp://$live_url>>$NGSR/yukicpl_check_point/.livesite
+                echo "$live_url" | grep -q -E '^[.a-zA-Z0-9-\/]$' && { ##合法的有效域名
+                echo "push rtmp://$live_url;">>$NGSR/yukicpl_check_point/.livesite
                     } || {  ##不合法的
                     echo 输入的内容不合规范，请再检查一遍并重新输入
                     break ##离开当前循环&continue=继续循环
@@ -441,7 +441,7 @@ rtmp {
      application live {
            live on;
            record off;
-           $live_url_ok         ##想把那个文件的内容扔进这里
+           $live_url_ok
           }
     }
 }  
