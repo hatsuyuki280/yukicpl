@@ -1,9 +1,9 @@
 #!/bin/bash 
 ## 初雪的服务器控制面板
-## 本文件可以放在 /usr/local/bin/yuki-panel.sh ，并 chmod +x /usr/local/bin/yuki-panel.sh 以方便执行
+## 本文件可以放在 /usr/local/bin/yukicpl ，并 chmod +x /usr/local/bin/yukicpl 以方便执行
 ##
 ## 本文件 git 版本位于 https://gist.github.com/shellexy/73a5ed0d3c86a468104171e659c076d9
-## 更新 git 版可以在 bash 执行 sudo wget -O /usr/local/bin/yuki-panel.sh https://gist.github.com/shellexy/73a5ed0d3c86a468104171e659c076d9/raw/24c3ea3eb035d6cd4cdb4761e452585a4c1cddfb/yuki-panel.sh ; sudo chmod +x /usr/local/bin/yuki-panel.sh
+## 更新 git 版可以在 bash 执行 sudo wget -O /usr/local/bin/yukicpl https://gist.github.com/shellexy/73a5ed0d3c86a468104171e659c076d9/raw/24c3ea3eb035d6cd4cdb4761e452585a4c1cddfb/yuki-panel.sh ; sudo chmod +x /usr/local/bin/yuki-panel.sh
 
 
 ## 注： xxx()( yyyy; ) 或 xxx(){ yyyy; } 表示定义 bash 函数，函数名 xxx，函数内容为执行 yyyy
