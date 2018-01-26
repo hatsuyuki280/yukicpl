@@ -9,14 +9,73 @@
 ## 注： xxx()( yyyy; ) 或 xxx(){ yyyy; } 表示定义 bash 函数，函数名 xxx，函数内容为执行 yyyy
 ##     其中 圆括号版是在新建 bash 里执行里边的命令，而花括号版是在当前 bash 里执行
 
-##设置部分↓↓↓
+test -e ~/.yukicpl/yukicpl.conf || {
+    echo "由于系统检查不到设置文件的存在
+    （当前用户的用户文件夹下的/.yukicpl文件夹内的yukicpl.conf文件）
+    因此现在将会进行本面板的配置，如果未完成设置，将不会保存
+    当前进行的一切设置均可在今后使用过程中随时修改
+    "
+    echo '请在这里输入希望使用的根域名，输入后将可以仅输入二级域名部分完成站点域名绑定
+    如希望创建的域名为www.example.com则在这里输入
+    “example.com”(不包含引号) 即可在后续创建站点时输入“www”进行绑定
+    '
+    while test -z "$input_1" ; do
+    read -e input_1
 
+    echo 输入有误，请重试
+    done
+    echo '请在这里输入希望作为站点默认存储位置的路径
+    请输入以"/"开始，不要以"/"结尾的绝对路径
+    留空将会默认使用“/yuki/site”
+    '
+    while test -z "$input_2" ; do
+    read -e input_2
+    test -z "$input_2" && {
+        input_2="/yuki/site"
+        echo "将使用$input_2作为默认存储位置"
+        break
+    } || {
+        echo ...
+        ##检查正确性
+    }
+
+    echo 输入有误，请重试
+    done
+    echo '如果安装过MonaServer，请输入MonaServer的安装路径
+    执行文件应在这个文件夹里，如未安装过MonaServer，请保持此处为空！
+    留空将会自动部署nginx直播服务器
+    '
+    while test -z "$input_3" ; do
+    read -e input_3
+    test -z "$input_3" && {
+        break
+    } || {
+        echo ...
+        ##检查正确性
+    }
+    echo 输入有误，请重试
+    done
+    echo
+    mkdir -p ~/.yukicpl
+    cat >> ~/.yukicpl/yukicpl.conf <<OOO
 ##这是默认的一级域名部分
-DDN="yuki233.com"   ##请务必修改的部分
+DDN="$input_1"   ##请务必修改的部分
 
 ##这是默认网站所在的目录(绝对路径，以"/"开始，不要以"/"结尾)
-WR="/yuki/site"     ##请务必修改的部分
+WR="$input_2"     ##请务必修改的部分
 
+##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
+LP="$input_3"
+OOO
+    input_1=""
+    input_2=""
+    input_3=""
+}
+
+##设置部分↓↓↓
+
+##将会从配置文件读取
+sources ~/.yukicpl/yukicpl.conf
 ##这是ngnix的设置文件夹(绝对路径，以"/"开始，不要"/"结尾)
 NGSR="/etc/nginx"   ##此项开始以下为如果不确定请保持默的部分
 
@@ -46,7 +105,7 @@ echo '
    |   sset  * 手动配置站点*    ----  * 功能开发中     siscon  * 常用系统设置  |
    |    ssl  * 配置ssl证书      live  * 开始直播        clean  * 清理服务器    |
    |    sql  * SQL功能列表     lived  * 结束直播        chown  * 重置网站权限  |
-   |     ss  * SS-VPN管理工具*  ----  * 功能开发中        dnc  * 批量改域名*   |
+   |    vpn  * VPN工具          ----  * 功能开发中        dnc  * 批量改域名*   |
    |   list  * 查看网站列表     ----  * 功能开发中       tmgr  * 系统状态      |
    |    del  * 删除站点         ----  * 功能开发中       quit  * 退出面板      |
     ==========================================================================='
@@ -326,28 +385,21 @@ conf()(   ##数据库设置（虽然不知道应该放些什么进去）
 
 #### sql 控制面板用指令 ####/
 
-ss()(       ##用于控制ShadowS-lib(未完成)
+vpn()(       ##用于控制ShadowS-lib(未完成)
     echo '
-     ///////////////////////[  初雪服务器控制面板 -SS- ]\\\\\\\\\\\\\\\\\\\\\\\\
-     ***********************[ Yuki -S.S- Control Panel ]************************
+     ///////////////////////[ 初雪服务器控制面板 -VPN- ]\\\\\\\\\\\\\\\\\\\\\\\\
+     ***********************[ Yuki -VPN- Control Panel ]************************
      ===========================================================================
-    |   ss-o  * 开启服务器*   ss-auto  * 自动部署ss*    ss-ins  * 安装SS服务端* |
-    |   ss-s  * 关闭服务器*      ----  * 功能开发中      ss-rm  * 卸载SS服务端* |
-    |  ssini  * 修改配置文件*    ----  * 功能开发中       back  * 返回主菜单    |
+    |   vpno  * 开启服务器*   vpnauto  * 自动部署       vpnins  * 安装SS服务端* |
+    |   vpns  * 关闭服务器*      ----  * 功能开发中      vpnrm  * 卸载SS服务端* |
+    |   vset  * 修改设置         ----  * 功能开发中       back  * 返回主菜单    |
      ==========================================================================='
 )
 
 #### SS 控制面板用指令 ####\
-ss-auto()(     ##自动部署ss服务器
-    echo 即将自动部署
-)
 
-ss-ins()(   ##SS安装
-    echo 这里是SS的安装
-)
-
-ss-rm()(   ##SS卸载
-    echo 这里是SS的卸载
+vpno()(
+    _vpntest
 )
 
 #### SS 控制面板用指令 ####/
@@ -440,7 +492,7 @@ rtmp {
 
      application live {
            live on;
-           record off;
+
            $live_url_ok
           }
     }
@@ -587,6 +639,9 @@ quit(){     ##退出
 }
 
 ##################以下内容为自用##################
+_vpntest()(
+
+)
 
 _check_nginx(){
     ## 检测 nginx、php-fpm 等
