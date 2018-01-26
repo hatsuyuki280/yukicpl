@@ -465,7 +465,7 @@ live()(     ##开启直播服务器
             apt install -y libnginx-mod-rtmp -t stretch-backports
         } 
     }
-        rm $NGSR/yukicpl_check_point/.liveadd
+        rm $NGSR/yukicpl_check_point/.liveadd.tmp
         read -e -p "是否需要同时直播至其他站点？[y/N]"   SL
         while [ "$SL" = "Y" -o "$SL" = "y" ] ; do  ##是否继续添加
             while test -z "$live_url" ; do  ##检查$SITE变量是否存在(不存在执行)
@@ -473,7 +473,7 @@ live()(     ##开启直播服务器
                 echo "(直接从直播地址的域名开始)live.example.com/直播码(直播密钥)"
                 read -e live_url           
                 echo "$live_url" | grep -q -E '^[.a-zA-Z0-9-\/]$' && { ##合法的有效域名
-                echo "push rtmp://$live_url;">>$NGSR/yukicpl_check_point/.liveadd
+                echo "push rtmp://$live_url;">>$NGSR/yukicpl_check_point/.liveadd.tmp
                     } || {  ##不合法的
                     echo 输入的内容不合规范，请再检查一遍并重新输入
                     break ##离开当前循环&continue=继续循环
@@ -483,7 +483,7 @@ live()(     ##开启直播服务器
         read -e -p "是否需要同时直播至其他站点？[y/N]" SL
         done
 
-    live_url_ok=$(cat $NGSR/yukicpl_check_point/.liveadd ) ##将推流列表扔进变量里
+    live_url_ok=$(cat $NGSR/yukicpl_check_point/.liveadd.tmp ) ##将推流列表扔进变量里
     grep -q "rtmp" /etc/nginx/nginx.conf || cat >> /etc/nginx/nginx.conf <<OOO
 rtmp {
  server{
@@ -499,7 +499,7 @@ rtmp {
 }  
 OOO
     ##修改nginx的配置为[可直播]
-    test -e $NGSR/yukicpl_check_point/.livesite || {  ##检查直播网站文件是否存在
+    test -e $NGSR/yukicpl_check_point/.livesite.conf || {  ##检查直播网站文件是否存在
         read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL ##询问是否需要
         test "$SL" = "n" && {   ##满足否
         echo '将不配置www页面'
@@ -508,7 +508,7 @@ OOO
                 site_dir=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '\/[0-9a-zA-Z./]*'`
                 livesite=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '[0-9a-zA-Z.]*' | head -1`
                 mkdir -p "$NGSR/yukicpl_check_point"    ##记录检查点
-                cat > "$NGSR/yukicpl_check_point/.livesite" << OOO
+                cat > "$NGSR/yukicpl_check_point/.livesite.conf" << OOO
 ready
 直播站点 web 目录位于 $site_dir
 直播站点绑定的域名是：$livesite
@@ -519,7 +519,7 @@ OOO
     }
     r
     echo 启动成功
-    grep -h 直播站点 "$NGSR/yukicpl_check_point/.livesite"
+    grep -h 直播站点 "$NGSR/yukicpl_check_point/.livesite.conf"
 )
 
 lived()(     ##停止直播服务器
