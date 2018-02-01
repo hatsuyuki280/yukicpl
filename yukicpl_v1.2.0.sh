@@ -479,9 +479,9 @@ del()(      ##移除站点
 
 ##第二列内容##
 
-sqlf()(
+sqlf(){
     service mysqld status
-)
+}
 
 php()(
     echo 查看 php 版本
