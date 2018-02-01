@@ -96,7 +96,7 @@ OOO
 ##设置部分↓↓↓
 
 ##将会从配置文件读取
-sources ~/.yukicpl/yukicpl.conf
+source ~/.yukicpl/yukicpl.conf
 ##这是ngnix的设置文件夹(绝对路径，以"/"开始，不要"/"结尾)
 NGSR="/etc/nginx"   ##此项开始以下为如果不确定请保持默的部分
 
