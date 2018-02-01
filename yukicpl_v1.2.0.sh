@@ -700,7 +700,7 @@ _check_nginx(){
 }
 
 _check_mysql()(
-    test "Sqlt" = "Y" && {
+    test "$Sqlt" = "Y" && {
         which mysql >/dev/null || {
         echo mysql服务器未安装
         echo 将会自动进行安装
