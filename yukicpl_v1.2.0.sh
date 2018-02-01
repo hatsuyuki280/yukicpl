@@ -21,7 +21,7 @@ test -e ~/.yukicpl/yukicpl.conf || {
     '
     while test -z "$input_1" ; do
     read -e input_1
-
+    echo "$input_1" | grep -q -E '^[.a-zA-Z0-9-]+$'
     echo 输入有误，请重试
     done
     echo '请在这里输入希望作为站点默认存储位置的路径
@@ -59,7 +59,8 @@ test -e ~/.yukicpl/yukicpl.conf || {
     （如果选择否将会默认使用Sqlite作为数据库）
     备注，较低配置（500MB内存以下设备）的设备以及部分设备将可能由于种种原因无法正常使用Mysql服务器，如强行启用将会影响性能。如果启用后发现无法正常使用请重新进行设置。
     "
-    read -e -p "Yes(No)，默认为yes"   Input_sql ##询问是否需要
+    read -e -p "Yes(No)，默认为yes
+    >"   Input_sql ##询问是否需要
     test "$Input_sql" = "no" && {
         input_4="N"
     } || {
@@ -341,7 +342,7 @@ ssl()(  ##设置基于Let’s Encrypt的SSL，仅限A记录
 
 sql()(      ##SQL服务器管理界面（未完成）
     test "$Sqlt" = "N" && {
-        echo 您当前并未启用Mysql功能，请检查设置
+        echo 您当前并未启用Mysql功能，请检查设置，如无需使用mysql，将默认使用sqlite，无需额外设置
         break
     } || {
         _check_mysql
