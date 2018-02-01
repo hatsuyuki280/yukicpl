@@ -340,7 +340,7 @@ ssl()(  ##设置基于Let’s Encrypt的SSL，仅限A记录
 
 
 sql()(      ##SQL服务器管理界面（未完成）
-    test "Sqlt" = "N" && {
+    test "$Sqlt" = "N" && {
         echo 您当前并未启用Mysql功能，请检查设置
         break
     } || {
