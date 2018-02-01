@@ -55,7 +55,22 @@ test -e ~/.yukicpl/yukicpl.conf || {
     }
     echo 输入有误，请重试
     done
-    echo
+    echo "是否希望使用Mysql?
+    （如果选择否将会默认使用Sqlite作为数据库）
+    备注，较低配置（500MB内存以下设备）的设备以及部分设备将可能由于种种原因无法正常使用Mysql服务器，如强行启用将会影响性能。如果启用后发现无法正常使用请重新进行设置。
+    "
+    read -e -p "Yes(No)，默认为yes"   Input_sql ##询问是否需要
+    test "$Input_sql" = "no" && {
+        input_4="N"
+    } || {
+        input_4="Y"
+    }
+    test "$Input_sql" = "n" && {
+        input_4="N"
+    } || {
+        input_4="Y"
+    }
+    echo 
     mkdir -p ~/.yukicpl
     cat >> ~/.yukicpl/yukicpl.conf <<OOO
 ##这是默认的一级域名部分
@@ -66,10 +81,15 @@ WR="$input_2"     ##请务必修改的部分
 
 ##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
 LP="$input_3"
+
+##是否使用Mysql
+
+Sqlt="$input_4"
 OOO
     input_1=""
     input_2=""
     input_3=""
+    input_4=""
 }
 
 ##设置部分↓↓↓
@@ -245,7 +265,7 @@ OOO
     ## 添加默认的 index.html
     test -a "$WWWDIR/index.html" || test -a "$WWWDIR/index.php" || cp /var/www/html/index.nginx-debian.html "$WWWDIR/index.html"
     echo "## 添加了站点 $SITE ，目录位于 $WWWDIR"
-    ping -c 1 $SITE ##敲击一下dns
+        ping -c 1 $SITE ##敲击一下dns
     ## https 证书
     ## Let's Encrypt 目前只支持 A 记录验证，不支持 CNAME
     #nslookup $SITE | grep -q 'canonical name' && {
@@ -260,7 +280,20 @@ OOO
     ##     --preferred-challenges tls-sni 表示使用 443 端口验证申请
     ##     --redirect 参数表示将 80 端口 http 访问重定向到 443 端口 https 地址
     ##     --keep 参数表示保持已经申请过的证书
-    certbot --agree-tos --nginx --preferred-challenges tls-sni --redirect --keep --register-unsafely-without-email -d "$SITE" && {
+    ## 因为 Let’s Encrypt 不再支持 --nginx 自动申请，所以得改为 --authenticator webroot --installer nginx
+    #certbot --agree-tos --nginx --preferred-challenges tls-sni --redirect --keep --register-unsafely-without-email -d "$SITE" && {
+    for i in $(seq 2); do
+        certbot --authenticator webroot --installer nginx --webroot-path "$WWWDIR" --redirect --keep --register-unsafely-without-email -d "$SITE" && break
+        test "$i" = 2 && break
+        echo "申请 $SITE 的 ssl 证书失败， 将在 30 秒后自动再次尝试申请…"
+        ## 计时 30
+        for t in $(seq 30); do
+            echo -n "$t…"
+            sleep 1
+        done
+        echo
+    done
+    test -a /etc/letsencrypt/live/$SITE/fullchain.pem && {
         ## 新版 certbot 生成的配置文件里 redirect 被注释了，所以用下边的 sed 命令开启将 http 访问转到 https
         sed -i '/# Redirect non-https traffic to https/,/# } # managed by Certbot/s/# Redirect non-https traffic to https/if ($scheme != "https") { return 301 https:\/\/$host$request_uri; } # Redirect http to https/g' "$NGSR/sites-enabled/$SITE"
         $NGP reload
@@ -292,30 +325,37 @@ ssl()(  ##设置基于Let’s Encrypt的SSL，仅限A记录
     echo "## 如果您已经配置过 https 证书，请输入 c 取消"
     $NGP start
     certbot -q --help | grep ' --nginx' || apt install -y python-certbot-nginx || return
-    certbot --agree-tos --nginx --preferred-challenges tls-sni --redirect --keep --register-unsafely-without-email && {
+    $NGP stop
+    certbot --agree-tos --authenticator standalone --installer nginx --redirect --keep --register-unsafely-without-email && {
         ## 新版 certbot 生成的配置文件里 redirect 被注释了，所以用下边的 sed 命令开启将 http 访问转到 https
         sed -i '/# Redirect non-https traffic to https/,/# } # managed by Certbot/s/# Redirect non-https traffic to https/if ($scheme != "https") { return 301 https:\/\/$host$request_uri; } # Redirect http to https/g' "$NGSR/sites-enabled/"*
-        $NGP reload
     }
+    pkill nginx
+    $NGP start
     which crontab > /dev/null || { echo "使用 cron 定时自动续期证书" ; apt install -y cron ; }
     echo -e "0 0 1 * * /usr/bin/certbot renew --force-renewal \n9 0 1 * * $NGP restart " > /etc/cron.d/certbot-renew
     echo -e "## 手动续期可以在 shell 下执行命令\n    certbot renew"
 )
 
 
-sql()(      ##SQL服务器管理界面（未完成）
-    _check_mysql
-    echo '
-    ///////////////////////[  初雪服务器控制面板 -SQL- ]\\\\\\\\\\\\\\\\\\\\\\\
-    ***********************[  Yuki -SQL- Control Panel ]***********************
-    ===========================================================================
-   |   sqlo  * 开启sql          user  * 列出用户名     sqlchk  * 遍历数据库    |
-   |   sqls  * 关闭sql         pwsee  * 查看密码       addsql  * 添加数据库    |
-   |   sqlr  * 重启sql         adusr  * 添加新用户     delsql  * 移除数据库    |
-   |   sqlb  * 备份/导出       rmusr  * 移除用户         conf  * 数据库设置    |
-   |  recov  * 恢复/导入        root  * root密码操作     back  * 返回主菜单    |
-    ==========================================================================='
 
+sql()(      ##SQL服务器管理界面（未完成）
+    test "Sqlt" = "N" && {
+        echo 您当前并未启用Mysql功能，请检查设置
+        break
+    } || {
+        _check_mysql
+        echo '
+        ///////////////////////[  初雪服务器控制面板 -SQL- ]\\\\\\\\\\\\\\\\\\\\\\\
+        ***********************[  Yuki -SQL- Control Panel ]***********************
+        ===========================================================================
+       |   sqlo  * 开启sql          user  * 列出用户名     sqlchk  * 遍历数据库    |
+       |   sqls  * 关闭sql         pwsee  * 查看密码       addsql  * 添加数据库    |
+       |   sqlr  * 重启sql         adusr  * 添加新用户     delsql  * 移除数据库    |
+       |   sqlb  * 备份/导出       rmusr  * 移除用户         conf  * 数据库设置    |
+       |  recov  * 恢复/导入        root  * root密码操作     back  * 返回主菜单    |
+        ==========================================================================='
+    }
 )
 
 #### sql 控制面板用指令 ####\
@@ -651,11 +691,17 @@ _check_nginx(){
 }
 
 _check_mysql()(
-    which mysql >/dev/null || {
+    test "Sqlt" = "Y" && {
+        which mysql >/dev/null || {
         echo mysql服务器未安装
         echo 将会自动进行安装
         apt install -y mysql-server
         mysql_secure_installation
+        }
+        apt install -y php7.0-mysql
+    } || {
+
+        apt install -y php-sqlite3 php7.0-mysql
     }
 )
 
