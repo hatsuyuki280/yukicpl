@@ -70,6 +70,7 @@ test -e ~/.yukicpl/yukicpl.conf || {
         input_4="N"
     } || {
         input_4="Y"
+
     }
     echo 
     mkdir -p ~/.yukicpl
@@ -84,13 +85,16 @@ WR="$input_2"     ##请务必修改的部分
 LP="$input_3"
 
 ##是否使用Mysql
-
 Sqlt="$input_4"
+
+##mySql数据文件将在这里
+Sqlp="$input_5"
 OOO
     input_1=""
     input_2=""
     input_3=""
     input_4=""
+    input_5=""
 }
 
 ##设置部分↓↓↓
@@ -706,11 +710,15 @@ _check_mysql()(
         echo 将会自动进行安装
         apt install -y mysql-server
         mysql_secure_installation
+        sqls
+        mkdir /yuki/data/db/
+
         }
         apt install -y php7.0-mysql
-    } || {
 
-        apt install -y php-sqlite3 php7.0-mysql
+    } || {
+        ##将只安装sqlite
+        apt install -y php-sqlite3
     }
 )
 
