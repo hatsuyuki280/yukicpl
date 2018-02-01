@@ -370,7 +370,7 @@ sqlo()(     ##启动sql
 sqls()(   ##停止sql
     echo 正在停止sql
     service mysqld stop
-    sql服务器已停止
+    echo sql服务器已停止
 )
 
 sqlr()(   ##重启sql
