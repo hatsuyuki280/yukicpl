@@ -1,0 +1,37 @@
+root 权限执行 mysql 不用密码大致是这些操作，
+
+在管理面板操作 mysql 基本可以 root 权限执行
+mysql -e "命令" 
+来用，比如：
+
+mysql 查询状态
+sudo mysql -e status
+
+mysql 创建数据库
+sudo mysqladmin create "$DATABASENAME"
+
+mysql 列出数据库
+echo 'show databases' | sudo mysql
+或
+sudo mysql -e 'show databases'
+
+mysql 删除数据库
+sudo mysqladmin drop "$DATABASENAME"
+
+mysql 创建用户
+sudo mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
+
+mysql 列出用户（两种方式默认输出格式不一样）
+echo "select distinct user from mysql.user;" | sudo mysql
+或
+sudo mysql -e "select distinct user from mysql.user;"
+
+
+mysql 删除用户
+sudo mysql -e "drop user '$USERNAME'@localhost;"
+
+把某数据库（及其下边的表）授权给某用户
+sudo mysql -e "grant select,insert,update,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
+
+取消授权
+sudo mysql -e "revoke select,insert,update,delete on $DATABASENAME.* from '$USERNAME'@'host';"
