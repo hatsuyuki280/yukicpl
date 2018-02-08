@@ -21,25 +21,22 @@ test -e ~/.yukicpl/yukicpl.conf || {
     '
     while test -z "$input_1" ; do
     read -e input_1
-    echo "$input_1" | grep -q -E '^[.a-zA-Z0-9-]+$'
-    echo 输入有误，请重试
+    echo "$input_1" | grep -q -E '^[.a-zA-Z0-9-]+$' || {
+        echo 输入有误，请重试
+        input_1=""
+    }
     done
     echo '请在这里输入希望作为站点默认存储位置的路径
     请输入以"/"开始，不要以"/"结尾的绝对路径
     留空将会默认使用“/yuki/site”
-    '
+    >'
     while test -z "$input_2" ; do
     read -e input_2
     test -z "$input_2" && {
         input_2="/yuki/site"
         echo "将使用$input_2作为默认存储位置"
         break
-    } || {
-        echo ...
-        ##检查正确性
     }
-
-    echo 输入有误，请重试
     done
     echo '如果安装过MonaServer，请输入MonaServer的安装路径
     执行文件应在这个文件夹里，如未安装过MonaServer，请保持此处为空！
@@ -70,9 +67,19 @@ test -e ~/.yukicpl/yukicpl.conf || {
         input_4="N"
     } || {
         input_4="Y"
-
     }
-    echo 
+    test "$input_4" = "Y" && {
+        echo '请输入打算用于存放数据库文件的目录
+        输入的内容应该是以"/"开始，不要以"/"结尾的绝对路径
+        如果不存在将会自动创建，留空自动使用默认目录/yuki/data/db
+        >'
+        read -e input_5
+        test -z "$input_5" && {
+            input_5="/yuki/data/db"        
+        }
+    }
+    echo 设置到此为止
+
     mkdir -p ~/.yukicpl
     cat >> ~/.yukicpl/yukicpl.conf <<OOO
 ##这是默认的一级域名部分
@@ -94,6 +101,7 @@ OOO
     input_2=""
     input_3=""
     input_4=""
+    Input_sql=""
     input_5=""
 }
 
@@ -417,7 +425,32 @@ sqlchk()( ##列出所有数据库名
 )
 
 addsql()( ##手动添加一个数据库
-    true
+    echo 您当前正在创建一个数据库，请根据提示输入相应的内容以完成创建。
+    read -e -p "请在这里输入打算创建的数据库名并按回车键：
+        合法的数据库名称应由英文及或数字的组合组成，可包括的符号为“ _ ”
+        >"   DATABASENAME   ##读入数据库名
+    read -e -p "是否需要创建一个新用户名与该数据库绑定？（Y/n）
+        >"   SL1   ##是否创建新用户
+    test -z "$SL1" && {
+        SL1="Y"
+    }
+    echo "$SL1" | grep -q -E '^[Yy]$' && {   ##满足是
+        read -e -p "您选择了是，请输入一个您打算创建的新用户名，如为空将会自动生成一个随机值作为用户名
+        >" USERNAME
+        test -z "$USERNAME" && {
+            USERNAME=$RANDOM+$RANDOM
+        }
+        read -e -p "为了您的数据库安全，请输入一个密码，安全的密码应包括大小写字母、数字及符号其中的至少两种
+            如未进行任何输入，将会自行生成一串数字作为密码，但为了保证安全并防止忘记，请尽快修改
+            >" PASSWORD
+        test -z $PASSWORD && {  ##如为空则自动赋值随机值
+            PASSWORD=$( head -c 22 /dev/urandom | base64 | head -c 20 )
+        }
+        mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
+    } 
+    test $SL1 = "n"
+    mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
+    sudo mysqladmin create "$DATABASENAME"
 )
 
 delsql()( ##手动移除一个数据库
@@ -486,7 +519,8 @@ del()(      ##移除站点
 ##第二列内容##
 
 sqlf(){
-    service mysqld status
+    echo "当前MySQL服务器状态如下："
+    mysql -e status ##查看MySQL服务器状态
 }
 
 php()(
@@ -699,7 +733,7 @@ _vpntest()(
 _check_nginx(){
     ## 检测 nginx、php-fpm 等
     { which nginx && which php-fpm7.0 && { echo /etc/php/7.0/mods-available/* | grep gd.ini | grep sqlite3.ini | grep mbstring.ini ; }
-    } >/dev/null || apt install -y  nginx-full php-fpm php-cgi php-curl php-gd php-mcrypt php-mbstring php-sqlite3 php7.0-mysql
+    } >/dev/null || apt install -y  nginx-full php-fpm php-cgi php-curl php-gd php-mcrypt php-mbstring php-sqlite3 ##php7.0-mysql
     _check_mysql
 }
 
@@ -709,10 +743,12 @@ _check_mysql()(
         echo mysql服务器未安装
         echo 将会自动进行安装
         apt install -y mysql-server
-        mysql_secure_installation
-        sqls
-        mkdir /yuki/data/db/
-
+        ##      这里其实打算修改数据库的存储路径的
+        ##sqls
+        ##mkdir $Sqlp/
+        ##mv /var/lib/mysql　$Sqlp/
+        ##
+        mysql_secure_installation   ##进行初期设置
         }
         apt install -y php7.0-mysql
 
