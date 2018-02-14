@@ -1,10 +1,12 @@
 #!/bin/bash
 echo "  [雪次元AriaWebUI控制面板]
      请选择希望执行的操作
-          [o] 启动
-          [s] 停止
-          [c] 设置
-          [q] 退出
+          [o] 启    动
+          [s] 停    止
+          [c] 设    置
+          [q] 退    出
+          [a] 添加用户
+          [r] 移除用户
 "
 test -e ~/.yukicpl/aria.temp && {
     source ~/.yukicpl/aria.temp
@@ -23,10 +25,8 @@ c()(
 )
 
 o()(
-    cd /yuki/site/dl.sm.yuki233.com/download/ 
-    sudo -u dl nohup aria2c --enable-rpc &
-#    cd $DLR/download/ 
-#    sudo -u dl nohup aria2c --enable-rpc &
+#    start-stop-daemon --start --quiet --background --pidfile /run/aria2c-rpc.pid --chdir $DLR/download/ --chuid $usr --exec /usr/bin/aria2c -- --enable-rp
+    start-stop-daemon --start --quiet --background --pidfile /run/aria2c-rpc.pid --chdir /yuki/site/dl.sm.yuki233.com/download/ --chuid dl --exec /usr/bin/aria2c -- --enable-rp
 )
 
 s()(
