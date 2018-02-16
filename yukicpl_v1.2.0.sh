@@ -428,16 +428,16 @@ addsql()( ##手动添加一个数据库
     echo 您当前正在创建一个数据库，请根据提示输入相应的内容以完成创建。
     read -e -p "请在这里输入打算创建的数据库名并按回车键：
         合法的数据库名称应由英文及或数字的组合组成，可包括的符号为“ _ ”
-        如果没有输入任何内容，将会使用日期+一个随机数作为数据库名
-        为了方便管理，还请务必自行输入。
+        如果没有输入任何内容，将会使用日期作为数据库名
+        但是为了方便管理，还请务必自行输入。
         >"   DATABASENAME   ##读入数据库名
     test -z "$DATABASENAME" && {
-        DATABASENAME=$(date +"%Y_%m_%d_%H_%M_%S")_$RANDOM
+        DATABASENAME=$(date +"%Y_%m_%d_%H_%M_%S")
     }
     read -e -p "是否需要创建一个新用户名与该数据库绑定？（Y/n）
         >"   SL1   ##是否创建新用户
     test -z "$SL1" && {
-        SL1="Y"
+        echo 请从当前列表中选择一个用户与数据库进行绑定
     }
     echo "$SL1" | grep -q -E '^[Yy]$' && {   ##满足是
         read -e -p "您选择了是，请输入一个您打算创建的新用户名，如为空将会自动生成一个随机值作为用户名
@@ -585,64 +585,7 @@ rtmp {
 OOO
     ##修改nginx的配置为[可直播]
     test -e $NGSR/yukicpl_check_point/.livesite.conf || {  ##检查直播网站文件是否存在
-        read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL ##询问是否需要
-        test "$SL" = "n" && {   ##满足否
-        echo '将不配置www页面'
-            } || {  ##需要
-                ret=$(add | tee /dev/stderr)
-                site_dir=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '\/[0-9a-zA-Z./]*'`
-                livesite=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '[0-9a-zA-Z.]*' | head -1`
-                mkdir -p "$NGSR/yukicpl_check_point"    ##记录检查点
-                cat > "$NGSR/yukicpl_check_point/.livesite.conf" << OOO
-ready
-直播站点 web 目录位于 $site_dir
-直播站点绑定的域名是：$livesite
-OOO
-                cd $site_dir    ##转入站点目录
-                echo 未部署站点程序
-            }
-    }
-    r
-    echo 启动成功
-    grep -h 直播站点 "$NGSR/yukicpl_check_point/.livesite.conf"
-)
-
-lived()(     ##停止直播服务器
-    test -e $LP/MonaServer && { ##如果安装了mona直播服务
-        pkill -f MonaServer
-    } || {  ##没有安装直播服务
-        sed -i '/^rtmp/,/^}/d' /etc/nginx/nginx.conf
-    ##修改nginx的配置为[不可直播]
-    }
-    r
-    echo 停止成功
-)
-
-list()(     ##查看已启用站点列表
-    echo 查看站点列表
-    grep -h -r '^\s*server_name ' $NGSR/sites-enabled/ | awk '{print $2}' | uniq
-)
-
-##第三列内容##
-
-giton()(    ##启用本地代码托管（未完成）
-echo '正在编写'
-echo '未完成'
-)
-
-siscon ()(
-    echo '
-    ///////////////////////[  初雪服务器控制面板 -SSS- ]\\\\\\\\\\\\\\\\\\\\\\\
-    ***********************[  Yuki -SSS- Control Panel ]***********************
-    ===========================================================================
-   |   ----  * 功能开发中       ----  * 功能开发中       ----  * 功能开发中    |
-   |   ----  * 功能开发中       ----  * 功能开发中       ----  * 功能开发中    |
-   |   ----  * 功能开发中       ----  * 功能开发中       zhcn  * 安装其他语言  |
-   |   ----  * 功能开发中       ----  * 功能开发中      timea  * 系统时区设置  |
-   |   ----  * 功能开发中       ----  * 功能开发中       back  * 返回主菜单    |
-    ==========================================================================='
-)
-##给常用系统设置功能用的命令##
+     -
 
 zhcn()( ##修改系统使用的语言
     echo 请选择需要的语言
@@ -650,10 +593,9 @@ zhcn()( ##修改系统使用的语言
 )
 
 timea()( ##修改时区
-    timearea=$(date -R)
-    echo 当前时区为"$timearea"
+    echo 当前时区为$(date -R)
     read -e -p "是否要修改当前时区[y/N]"   SL ##询问是否需要
-    test "$SL" = "y" && {   ##满足是
+    echo "$SL" | grep -q -E '^[Yy]$' && {   ##满足是
     dpkg-reconfigure tzdata
     }
 )
@@ -664,8 +606,7 @@ clean()(
     echo 不会删除控制面板文件，适合打算初始化服务器的情景使用
     echo 请确定已完成数据/文件备份
     echo 操作将不可逆，重新执行本面板的相关功能将会重新安装所需功能，所有设置都将初始化（包括数据库用户信息）
-    timearea=$(date -R)
-    echo 为了顺利执行本面板的清理，请确定当前时区正确（"$timearea"）
+    echo 为了顺利执行本面板的清理，请确定当前时区正确（$(date -R)）
     read -e -p "是否要修改当前时区[y/N]"   SL ##询问是否需要
     test "$SL" = "y" && {   ##满足是
     dpkg-reconfigure tzdata
