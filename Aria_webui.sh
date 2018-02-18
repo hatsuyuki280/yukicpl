@@ -37,6 +37,9 @@ s()(
     }
 )
 
+echo " $@" | grep -q ' -t' && TEST=1    ## 如果启动命令行参数有 -t 则使用测试模式，不执行命令
+
+help    ##帮助
 while true; do
     [ -z "$HELPED" ] && echo '查看帮助请输入 help'
     HELPED=1
