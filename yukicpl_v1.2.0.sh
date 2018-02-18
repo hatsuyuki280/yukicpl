@@ -585,7 +585,64 @@ rtmp {
 OOO
     ##修改nginx的配置为[可直播]
     test -e $NGSR/yukicpl_check_point/.livesite.conf || {  ##检查直播网站文件是否存在
-     -
+        read -e -p "是否需要为直播服务添加一个站点？[Y/n]"   SL ##询问是否需要
+        test "$SL" = "n" && {   ##满足否
+        echo '将不配置www页面'
+            } || {  ##需要
+                ret=$(add | tee /dev/stderr)
+                site_dir=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '\/[0-9a-zA-Z./]*'`
+                livesite=`echo "$ret" |  grep '添加了站点.*目录位于' | grep -o '[0-9a-zA-Z.]*' | head -1`
+                mkdir -p "$NGSR/yukicpl_check_point"    ##记录检查点
+                cat > "$NGSR/yukicpl_check_point/.livesite.conf" << OOO
+ready
+直播站点 web 目录位于 $site_dir
+直播站点绑定的域名是：$livesite
+OOO
+                cd $site_dir    ##转入站点目录
+                echo 未部署站点程序
+            }
+    }
+    r
+    echo 启动成功
+    grep -h 直播站点 "$NGSR/yukicpl_check_point/.livesite.conf"
+)
+
+lived()(     ##停止直播服务器
+    test -e $LP/MonaServer && { ##如果安装了mona直播服务
+        pkill -f MonaServer
+    } || {  ##没有安装直播服务
+        sed -i '/^rtmp/,/^}/d' /etc/nginx/nginx.conf
+    ##修改nginx的配置为[不可直播]
+    }
+    r
+    echo 停止成功
+)
+
+list()(     ##查看已启用站点列表
+    echo 查看站点列表
+    grep -h -r '^\s*server_name ' $NGSR/sites-enabled/ | awk '{print $2}' | uniq
+)
+
+##第三列内容##
+
+giton()(    ##启用本地代码托管（未完成）
+echo '正在编写'
+echo '未完成'
+)
+
+siscon ()(
+    echo '
+    ///////////////////////[  初雪服务器控制面板 -SSS- ]\\\\\\\\\\\\\\\\\\\\\\\
+    ***********************[  Yuki -SSS- Control Panel ]***********************
+    ===========================================================================
+   |   ----  * 功能开发中       ----  * 功能开发中       ----  * 功能开发中    |
+   |   ----  * 功能开发中       ----  * 功能开发中       ----  * 功能开发中    |
+   |   ----  * 功能开发中       ----  * 功能开发中       zhcn  * 安装其他语言  |
+   |   ----  * 功能开发中       ----  * 功能开发中      timea  * 系统时区设置  |
+   |   ----  * 功能开发中       ----  * 功能开发中       back  * 返回主菜单    |
+    ==========================================================================='
+)
+##给常用系统设置功能用的命令##
 
 zhcn()( ##修改系统使用的语言
     echo 请选择需要的语言
