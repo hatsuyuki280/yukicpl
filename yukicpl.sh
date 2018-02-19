@@ -1,9 +1,5 @@
 #!/bin/bash 
-## 初雪的服务器控制面板
-## 本文件可以放在 /usr/local/bin/yukicpl ，并 chmod +x /usr/local/bin/yukicpl 以方便执行
-## 更新 git 版可以在 bash 执行 sudo wget -O /usr/local/bin/yukicpl 一个地址 ; sudo chmod +x /usr/local/bin/yukicpl
-
-
+##雪次元服务器管理面板位于 
 ## 注： xxx()( yyyy; ) 或 xxx(){ yyyy; } 表示定义 bash 函数，函数名 xxx，函数内容为执行 yyyy
 ##     其中 圆括号版是在新建 bash 里执行里边的命令，而花括号版是在当前 bash 里执行
 
