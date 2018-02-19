@@ -21,4 +21,8 @@
 
 #### 如无其他需求，请只下载[yukicpl.sh](https://github.com/hatsuyuki280/yukicpl/blob/master/yukicpl.sh)进行使用，其他关联文件将会在第一次使用该功能时自动下载
 
-\#\#使うの場合は、もし他のご用がないなら、ただ「yukicpl.sh」というもののみダウンロードして使ってください、他の関連なパズルが必要なとき、自動的にダウンロードことができますから
+\#\#使うの場合は、もし他のご用がないなら、ただ「yukicpl.sh」というもののみダウンロードして使ってください、他の関連なパズルが必要なとき、自動的にダウンロードことができますから。
+
+#### 也很推荐从[install.sh](https://github.com/hatsuyuki280/yukicpl/blob/master/install.sh)开始体验，一切关联内容将在使用时自动获取最新版本
+
+\#\#[install.sh](https://github.com/hatsuyuki280/yukicpl/blob/master/install.sh)からの体験もおすすめです、他のすべて関連なパズルが必要なとき、自動的に最新バージョンからダウンロードすることができます。
