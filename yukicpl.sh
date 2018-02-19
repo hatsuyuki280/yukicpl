@@ -640,7 +640,7 @@ siscon ()(
 ##给常用系统设置功能用的命令##
 
 bench()(    ##性能测试工具（bench.sh）
-    echo 本工具需要从互联网执行 bench.sh 进行性能测试(脚本由 bench.sh 提供)
+    echo "本工具需要从互联网执行 bench.sh 进行性能测试(脚本由 bench.sh 提供)"
     echo 测试内容包括 系统信息 IO 和 网络速度
     read -e -p "请按回车(Enter)键继续，拒绝或退出请输入c
     >"   SL
