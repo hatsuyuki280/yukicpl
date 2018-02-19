@@ -463,6 +463,7 @@ conf()(   ##数据库设置（虽然不知道应该放些什么进去）
 #### sql 控制面板用指令 ####/
 
 vpn()(       ##用于控制ShadowS-lib(未完成)
+    #wget ~/.yukicpl/shadowsocks-libev_cpl.sh https://raw.githubusercontent.com/hatsuyuki280/yukicpl/master/%E8%BF%90%E8%A1%8C%E7%BB%84%E4%BB%B6/shadowsocks-libev_cpl.sh
     _vpntest
     echo '
      ///////////////////////[ 初雪服务器控制面板 -VPN- ]\\\\\\\\\\\\\\\\\\\\\\\\
@@ -730,15 +731,14 @@ quit(){     ##退出
 ##################以下内容为自用##################
 _vpntest()(
     test $vpn_type = "ss" && {
-        echo ShadowSockes
-        echo 知道什么是懒么？->自己去百度啊！
-    } || {
-        test $vpn_type = "sstp" && {
-            echo "sstp~"
-            echo 你们等着吧。。。。sstp。。。还没简化到能随手使用。。。。。所以这里只是个样子。。。
-        } 
-        
-    }
+        echo 更新SS控制面板
+        wget ~/.yukicpl/shadowsocks-libev_cpl.sh https://raw.githubusercontent.com/hatsuyuki280/yukicpl/master/%E8%BF%90%E8%A1%8C%E7%BB%84%E4%BB%B6/shadowsocks-libev_cpl.sh
+        chmod +x ~/.yukicpl/shadowsocks-libev_cpl.sh
+    } 
+    test $vpn_type = "sstp" && {
+        echo "sstp~"
+        echo 你们等着吧。。。。sstp。。。还没简化到能随手使用。。。。。所以这里只是个样子。。。
+    } 
 )
 
 _check_nginx(){
