@@ -1,7 +1,16 @@
 #!/bin/bash
-
 ## setup ss
-
+port=""
+password=""
+##初始化
+while test -z "$port" ; do
+    read -e -p "请在这里输入希望监听的端口号
+    >" port
+done
+while test -z "$password" ; do
+    read -e -p "请在这里输入一串字符作为密码
+    >" password
+done
 echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  | sudo tee /etc/apt/sources.list.d/stretch-backports.list
 apt update
 sudo apt install -y shadowsocks-libev simple-obfs -t  stretch-backports
@@ -10,9 +19,9 @@ cp /etc/shadowsocks-libev/config.json /etc/shadowsocks-libev/config.json.dpkg
 cat > /etc/shadowsocks-libev/config.json <<OOO
 {
     "server":"0.0.0.0",
-    "server_port":3389,
+    "server_port":$port,
     "local_port":1080,
-    "password":"simeng",
+    "password":"$password",
     "timeout":60,
     "mode":"tcp_and_udp",
     "fast_open":true,
@@ -22,7 +31,6 @@ cat > /etc/shadowsocks-libev/config.json <<OOO
 }
 OOO
 systemctl restart shadowsocks-libev
-
 
 ## setup bbr
 sysctl net.ipv4.tcp_congestion_control=bbr | grep -q sysctl: || {
