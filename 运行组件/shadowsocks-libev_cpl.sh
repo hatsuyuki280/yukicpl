@@ -1,4 +1,5 @@
 #!/bin/bash
+test -a /usr/bin/sudo || sudo()( su -c "$@";)   ##自动授予sudo权限
 ## setup ss
 port=""
 password=""
