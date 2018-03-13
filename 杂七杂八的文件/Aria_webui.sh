@@ -20,7 +20,7 @@ echo "  [雪次元AriaWebUI控制面板]
 
 
 o()(
-    start-stop-daemon --start --quiet --background --pidfile /run/aria2c-rpc.pid --chdir $WD/download/ --chuid $usr --exec /usr/bin/aria2c -- --enable-rp
+    start-stop-daemon --start --quiet --background --pidfile /run/aria2c-rpc.pid --chdir $WD/download/ --chuid $usr --exec /usr/bin/aria2c -- --enable-rpc
 )
 
 s()(
