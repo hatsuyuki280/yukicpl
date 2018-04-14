@@ -388,13 +388,17 @@ sqlr()(   ##重启sql
 sqlb()(   ##备份/导出
 
     echo 请选择想要备份/导出
+    echo 功能未编写完成，导出已结束
 )
 
 recov()(  ##恢复/导入
+    echo 请选择需要导入的文件
+    echo 功能位编写完成，导入已结束
     true
 )
 
 user()(   ##列出用户
+    sudo mysql -e "select distinct user from mysql.user;"
     true
 )
 
