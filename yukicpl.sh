@@ -3,7 +3,9 @@
 ## 注： xxx()( yyyy; ) 或 xxx(){ yyyy; } 表示定义 bash 函数，函数名 xxx，函数内容为执行 yyyy
 ##     其中 圆括号版是在新建 bash 里执行里边的命令，而花括号版是在当前 bash 里执行
 
-test -e ~/.yukicpl/yukicpl.conf || {
+test -a /usr/bin/sudo || sudo()( su -c "$@";)   ##自动申请sudo权限
+
+test -e ~/.yukicpl/yukicpl.conf || {    ##启动检测
     echo "由于系统检查不到设置文件的存在
     （当前用户的用户文件夹下的/.yukicpl文件夹内的yukicpl.conf文件）
     因此现在将会进行本面板的配置，如果未完成设置，将不会保存
