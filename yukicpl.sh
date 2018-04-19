@@ -739,7 +739,7 @@ _vpntest()(
     test $vpn_type = "ss" && {
         echo 更新SS控制面板
         wget ~/.yukicpl/shadowsocks-libev_cpl.sh https://raw.githubusercontent.com/hatsuyuki280/yukicpl/master/%E8%BF%90%E8%A1%8C%E7%BB%84%E4%BB%B6/shadowsocks-libev_cpl.sh
-        chmod +x ~/.yukicpl/shadowsocks-libev_cpl.sh
+        chmod +x ~/.yukicpl/tool/shadowsocks-libev_cpl.sh
     } 
     test $vpn_type = "sstp" && {
         echo "sstp~"
