@@ -277,10 +277,6 @@ OOO
         ping -c 1 $SITE ##敲击一下dns
     ## https 证书
     ## Let's Encrypt 目前只支持 A 记录验证，不支持 CNAME
-    #nslookup $SITE | grep -q 'canonical name' && {
-    #    echo "## Let's Encrypt 目前只支持 A 记录验证，不支持 CNAME…所以咱暂时没办法为您的 CNAME 域名申请并配置 ssl 证书了…"
-    #    return
-    #}
     echo "## 自动申请 Let’s Encrypt 免费 https 证书"
     ## 如果系统还没有 certbot --nginx 则尝试安装 python-certbot-nginx
     _check_certbot
@@ -409,7 +405,31 @@ pwsee()(  ##查询某个数据库或某个用户的密码
 )
 
 adusr()(  ##添加一个新用户并配置数据库权限
-    true
+    echo "使用本向导将会建立一个用于连接到数据库的用户"
+    read -e -p "请在这里输入打算创建的用户名称并按回车键。
+        用户名称应由英文及或数字的组合组成，
+        如果没有输入任何内容，将会使用随机字符作为用户名
+        >"   USERNAME
+    test -z "$USERNAME" && {
+        USERNAME=user$RANDOM
+    } || {
+
+    }
+    read -e -p "请在这里输入打算创建的用户的密码并按回车键。
+        用户名称应由英文及或数字的组合组成，
+        如果没有输入任何内容，将会使用随机字符作为用户名
+        >"   USERNAME
+    test -z "$USERNAME" && {
+        USERNAME=user$RANDOM$RANDOM
+    } || {
+
+    }
+    sudo mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';" && {
+        echo 用户 $USERNAME 创建成功
+        if [] then
+        else
+        fi
+    }
 )
 
 rmusr()(  ##移除一个数据库并询问移除同名数据库
@@ -443,7 +463,7 @@ addsql()( ##手动添加一个数据库
         read -e -p "您选择了是，请输入一个您打算创建的新用户名，如为空将会自动生成一个随机值作为用户名
         >" USERNAME
         test -z "$USERNAME" && {
-            USERNAME=$RANDOM+$RANDOM
+            USERNAME=user$RANDOM$RANDOM
         }
         read -e -p "为了您的数据库安全，请输入一个密码，安全的密码应包括大小写字母、数字及符号其中的至少两种
             如未进行任何输入，将会自行生成一串数字作为密码，但为了保证安全并防止忘记，请尽快修改
