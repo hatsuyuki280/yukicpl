@@ -448,7 +448,7 @@ adusr()(  ##添加一个新用户并配置数据库权限
 
 rmusr()(  ##移除一个用户并询问移除同名数据库
     sudo mysql -e "revoke select,insert,update,delete on $DATABASENAME.* from '$USERNAME'@'host';"
-    echo "$SL1" | grep -q -E '^[Nn]$' && {
+    echo "$SL1" | grep -q -E '^[Nn]$'
 )
 
 root()(   ##操作root用户密码，实现显示密码和修改密码功能（软修改和强行修改最好都有）
