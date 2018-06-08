@@ -180,12 +180,12 @@ add()(      ##添加新站点
     ##[ -z "$DN" ] && read -e -p '请输入新域名: '  DN
     ## 注：|| 表示如果 左边命令不成功，则接着执行右边命令
     while test -z "$SITE" ; do  ##检查$SITE变量是否存在
-    echo "$DN" | grep -q -E '^[.a-zA-Z0-9-]+(.com|.info)$' && { ##合法的有效域名
+    echo "$DN" | grep -q -E '^[.a-zA-Z0-9_]+[.a-z]$' && { ##合法的有效域名
         SITE="$DN"
         echo 将使用$SITE作为站点绑定的域名
     } || {  ##不合法的
-            echo "$DN" | grep -q -E '^[.a-zA-Z0-9-]+$' && { ##可以作为二级域名注册
-                    read -e -p "域名不是很合法，是否使用默认的“$DDN”作为一级域名？[Y/N]"   SL
+            echo "$DN" | grep -q -E '^[.a-zA-Z0-9_]+$' && { ##可以作为二级域名注册
+                    read -e -p "域名不是很合法，是否使用默认的“ $DDN ” 作为一级域名？[Y/N]"   SL
                     ##提示输入....read -e -p  "提示信息"  变量名字
                 echo "$SL" | grep -q -E '^[YyNn]$' && { ##满足Y或N
                         test "$SL" = "y" && {   ##满足Y
@@ -391,13 +391,12 @@ sqlb()(   ##备份/导出
 
 recov()(  ##恢复/导入
     echo 请选择需要导入的文件
-    echo 功能位编写完成，导入已结束
+    echo 功能未编写完成，导入已结束
     true
 )
 
 user()(   ##列出用户
     sudo mysql -e "select distinct user from mysql.user;"
-    true
 )
 
 pwsee()(  ##查询某个数据库或某个用户的密码
@@ -408,32 +407,48 @@ adusr()(  ##添加一个新用户并配置数据库权限
     echo "使用本向导将会建立一个用于连接到数据库的用户"
     read -e -p "请在这里输入打算创建的用户名称并按回车键。
         用户名称应由英文及或数字的组合组成，
-        如果没有输入任何内容，将会使用随机字符作为用户名
+        如果没有输入任何内容，或者输入了与现有用户重复的用户名
+        将会使用随机字符作为用户名
         >"   USERNAME
-    test -z "$USERNAME" && {
-        USERNAME=user$RANDOM
-    } || {
-
+    test -z "$USERNAME_" && {
+        USERNAME=user$RANDOM$RANDOM
     }
-    read -e -p "请在这里输入打算创建的用户的密码并按回车键。
-        用户名称应由英文及或数字的组合组成，
-        如果没有输入任何内容，将会使用随机字符作为用户名
-        >"   USERNAME
-    test -z "$USERNAME" && {
+    echo $(sudo mysql -e "select distinct user from mysql.user;") | grep -q -E "$USERNAME_" && {
         USERNAME=user$RANDOM$RANDOM
     } || {
-
+        USERNAME=$USERNAME_
     }
-    sudo mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';" && {
-        echo 用户 $USERNAME 创建成功
-        if [] then
-        else
-        fi
+    read -e -p "请在这里输入打算创建的用户的密码并按回车键。
+        如果没有输入任何内容，将会使用随机字符作为密码
+        >"   PASSWORD
+    test -z "$PASSWORD" && {
+        PASSWORD=$( head -c 22 /dev/urandom | base64 | head -c 20 )
     }
+    sudo mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
+    echo 用户 $USERNAME 创建成功,密码为$PASSWORD
+    SL=""
+    read -e -p "是否需要绑定数据库权限？(Y/n)" SL
+    echo "$SL1" | grep -q -E '^[Nn]$' && {
+        true
+    } || {
+        echo "请在下面的列表里选择一个数据库，并输入完整数据库名"
+        sudo mysql -e 'show databases'
+        echo "如果现在想创建新库，请输入新的库名，本面板将会帮助你完成创建"
+        read -e -p "   >" DATABASENAME_
+        echo $(sudo mysql -e 'show databases') | grep -q -E "$DATABASENAME_" && {
+            DATABASENAME=$DATABASENAME_
+        } || {
+            DATABASENAME=$DATABASENAME_
+            sudo mysqladmin create "$DATABASENAME"
+        }
+        sudo mysql -e "grant select,insert,update,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
+    }
+    flush
 )
 
-rmusr()(  ##移除一个数据库并询问移除同名数据库
-    true
+rmusr()(  ##移除一个用户并询问移除同名数据库
+    sudo mysql -e "revoke select,insert,update,delete on $DATABASENAME.* from '$USERNAME'@'host';"
+    echo "$SL1" | grep -q -E '^[Nn]$' && {
 )
 
 root()(   ##操作root用户密码，实现显示密码和修改密码功能（软修改和强行修改最好都有）
@@ -441,25 +456,41 @@ root()(   ##操作root用户密码，实现显示密码和修改密码功能（�
 )
 
 sqlchk()( ##列出所有数据库名
-    true
+    sudo mysql -e 'show databases'
 )
 
 addsql()( ##手动添加一个数据库
     echo 您当前正在创建一个数据库，请根据提示输入相应的内容以完成创建。
+    echo "为了方便您管理，我们为您列出了所有已经存在的数据库名。"
+    sudo mysql -e 'show databases'
+    DATABASENAME_=""
     read -e -p "请在这里输入打算创建的数据库名并按回车键：
         合法的数据库名称应由英文及或数字的组合组成，可包括的符号为“ _ ”
         如果没有输入任何内容，将会使用日期作为数据库名
         但是为了方便管理，还请务必自行输入。
-        >"   DATABASENAME   ##读入数据库名
-    test -z "$DATABASENAME" && {
+        *如果输入了重复的数据库名，将会直接进入绑定用户环节，输入“ C ”取消
+        >"   DATABASENAME_   ##读入数据库名
+    echo "$DATABASENAME_" | grep -q -E '^[Cc]$' && {
+        break
+    }
+    test -z "$DATABASENAME_" && {
         DATABASENAME=$(date +"%Y_%m_%d_%H_%M_%S")
     }
+    SL1=""
     read -e -p "是否需要创建一个新用户名与该数据库绑定？（Y/n）
         >"   SL1   ##是否创建新用户
-    test -z "$SL1" && {
-        echo 请从当前列表中选择一个用户与数据库进行绑定
-    }
-    echo "$SL1" | grep -q -E '^[Yy]$' && {   ##满足是
+    echo "$SL1" | grep -q -E '^[Nn]$' && { ##不创建
+        echo "请在下面的列表里选择一个用户，并输入该用户的完整用户名"
+        sudo mysql -e "select distinct user from mysql.user;"
+        echo "如果现在想创建新用户，请输入新用户名，将会以随机密码创建一个指定用户名的用户"
+        read -e -p "   >" USERNAME_
+        echo $(sudo mysql -e "select distinct user from mysql.user;") | grep -q -E "$USERNAME_" && {
+            USERNAME=$USERNAME_
+        } || {
+            USERNAME=$USERNAME_
+            mysql -e "create user '$USERNAME'@localhost identified by "$( head -c 22 /dev/urandom | base64 | head -c 20 )";"
+        }
+    } || {   ##创建
         read -e -p "您选择了是，请输入一个您打算创建的新用户名，如为空将会自动生成一个随机值作为用户名
         >" USERNAME
         test -z "$USERNAME" && {
@@ -473,13 +504,37 @@ addsql()( ##手动添加一个数据库
         }
         mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
     } 
-    test $SL1 = "n"
-    mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
-    sudo mysqladmin create "$DATABASENAME"
+    echo $(sudo mysql -e 'show databases') | grep -q -E "$DATABASENAME_" && {
+        DATABASENAME=$DATABASENAME_
+    } || {
+        DATABASENAME=$DATABASENAME_
+        sudo mysqladmin create "$DATABASENAME"
+    }
+    sudo mysql -e "grant select,insert,update,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
+
+    echo "完成，数据库名为$DATABASENAME
+      用户名为$USERNAME
+      密码为$PASSWORD"
+    flush
 )
 
 delsql()( ##手动移除一个数据库
-    true
+    echo "请从下列数据库中选择需要删除的数据库
+        *如未进行备份将无法回复！！"
+    sudo mysql -e 'show databases'
+    read -e -p "你想删除哪一个？" DATABASENAME
+    echo $(sudo mysql -e 'show databases') | grep -q -E "$DATABASENAME" && {
+        SL=""
+        read -e -p "你真的要删除么？（y/N）" SL
+        echo "$SL" | grep -q -E '^[Yy]$' && {
+            sudo mysqladmin drop "$DATABASENAME" && {
+                echo "已成功移除数据库"
+            } || {
+                echo "数据库不存在！"
+            }
+        }
+    }
+    
 )
 
 conf()(   ##数据库设置（虽然不知道应该放些什么进去）
@@ -526,7 +581,7 @@ del()(      ##移除站点
         echo  停止删除
         return
     }
-    echo "$DN" | grep -q -E '^[.a-zA-Z0-9_]+(.com|.info)$' && {
+    echo "$DN" | grep -q -E '^[.a-z0-9_]+[.a-z]$' && {
         SITE="$DN"
     } || {
         SITE="$DN.$DDN"
@@ -647,8 +702,8 @@ list()(     ##查看已启用站点列表
 ##第三列内容##
 
 giton()(    ##启用本地代码托管（未完成）
-echo '正在编写'
-echo '未完成'
+    echo '正在编写'
+    echo '未完成'
 )
 
 siscon ()(
@@ -755,6 +810,16 @@ quit(){     ##退出
 }
 
 ##################以下内容为自用##################
+_flush()(
+    USERNAME=""
+    USERNAME_=""
+    PASSWORD=""
+    DATABASENAME=""
+    DATABASENAME_=""
+    SL=""
+    SL1=""
+)
+
 _vpntest()(
     test $vpn_type = "ss" && {
         echo 更新SS控制面板
@@ -764,6 +829,12 @@ _vpntest()(
     test $vpn_type = "sstp" && {
         echo "sstp~"
         echo 你们等着吧。。。。sstp。。。还没简化到能随手使用。。。。。所以这里只是个样子。。。
+        read -e -p "是否要切换到Shadowsocks-libev版？（Y/n）" SL
+        echo "$SL" | grep -q -E '^[Nn]$' || {   ##否
+            echo "将使用Shadowsocks作为默认vpn服务端。"
+            vpn_type = "ss"
+        }
+
     } 
 )
 
@@ -777,18 +848,17 @@ _check_nginx(){
 _check_mysql()(
     test "$Sqlt" = "Y" && {
         which mysql >/dev/null || {
-        echo mysql服务器未安装
-        echo 将会自动进行安装
-        apt install -y mysql-server
-        ##      这里其实打算修改数据库的存储路径的
-        ##sqls
-        ##mkdir $Sqlp/
-        ##mv /var/lib/mysql　$Sqlp/
-        ##
-        mysql_secure_installation   ##进行初期设置
+            echo 如果mysql服务器未安装将会自动进行安装
+            test 
+            apt install -y mysql-server
+            ##      这里其实打算修改数据库的存储路径的
+            ##sqls
+            ##mkdir $Sqlp/
+            ##mv /var/lib/mysql　$Sqlp/
+            ##
+            mysql_secure_installation   ##进行初期设置
+            apt install -y php7.0-mysql
         }
-        apt install -y php7.0-mysql
-
     } || {
         ##将只安装sqlite
         apt install -y php-sqlite3
