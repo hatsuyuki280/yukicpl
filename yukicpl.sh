@@ -441,7 +441,7 @@ adusr()(  ##添加一个新用户并配置数据库权限
             DATABASENAME=$DATABASENAME_
             sudo mysqladmin create "$DATABASENAME"
         }
-        sudo mysql -e "grant select,insert,update,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
+        sudo mysql -e "grant select,insert,update,create,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
     }
     flush
 )
@@ -510,7 +510,7 @@ addsql()( ##手动添加一个数据库
         DATABASENAME=$DATABASENAME_
         sudo mysqladmin create "$DATABASENAME"
     }
-    sudo mysql -e "grant select,insert,update,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
+    sudo mysql -e "grant select,insert,update,create,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
 
     echo "完成，数据库名为$DATABASENAME
       用户名为$USERNAME
