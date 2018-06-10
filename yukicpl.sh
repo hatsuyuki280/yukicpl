@@ -130,7 +130,7 @@ echo '
    |      o  * 开启服务器       sqlf  * 数据库状态      giton  * 启动代码托管* |
    |      s  * 关闭服务器        php  * 查看php版本      ----  * 功能开发中    |
    |      r  * 重启服务器        ini  * 配置php.ini      ----  * 功能开发中    |
-   |    add  * 添加新站点       ----  * 功能开发中       ----  * 功能开发中    |
+   |    add  * 添加新站点       onek  * 站点一键包       ----  * 功能开发中    |
    |   sset  * 手动配置站点*    ----  * 功能开发中     siscon  * 常用系统设置  |
    |    ssl  * 配置ssl证书      live  * 开始直播        clean  * 清理服务器    |
    |    sql  * SQL功能列表     lived  * 结束直播        chown  * 重置网站权限  |
@@ -425,7 +425,7 @@ adusr()(  ##添加一个新用户并配置数据库权限
         PASSWORD=$( head -c 22 /dev/urandom | base64 | head -c 20 )
     }
     sudo mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
-    echo 用户 $USERNAME 创建成功,密码为$PASSWORD
+    echo "用户 $USERNAME 创建成功,密码为$PASSWORD"
     SL=""
     read -e -p "是否需要绑定数据库权限？(Y/n)" SL
     echo "$SL1" | grep -q -E '^[Nn]$' && {
@@ -443,7 +443,7 @@ adusr()(  ##添加一个新用户并配置数据库权限
         }
         sudo mysql -e "grant select,insert,update,create,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
     }
-    flush
+    _flush
 )
 
 rmusr()(  ##移除一个用户并询问移除同名数据库
@@ -515,7 +515,7 @@ addsql()( ##手动添加一个数据库
     echo "完成，数据库名为$DATABASENAME
       用户名为$USERNAME
       密码为$PASSWORD"
-    flush
+    _flush
 )
 
 delsql()( ##手动移除一个数据库
@@ -534,7 +534,7 @@ delsql()( ##手动移除一个数据库
             }
         }
     }
-    
+    _flush
 )
 
 conf()(   ##数据库设置（虽然不知道应该放些什么进去）
@@ -613,6 +613,10 @@ php()(
 ini()(      ##打开php.ini
     echo 查看 php.ini 
     nano $PI
+)
+
+onek()(
+
 )
 
 live()(     ##开启直播服务器
