@@ -17,7 +17,7 @@ test -e ~/.yukicpl/yukicpl.conf || {    ##启动检测
     '
     while test -z "$input_1" ; do
     read -e input_1
-    echo "$input_1" | grep -q -E '^[.a-zA-Z0-9-]+$' || {
+    echo "$input_1" | grep -q -E "^[.a-zA-Z0-9_]+\.[a-z]{2,5}$" || {
         echo 输入有误，请重试
         input_1=""
     }
@@ -130,7 +130,7 @@ echo '
    |      o  * 开启服务器       sqlf  * 数据库状态      giton  * 启动代码托管* |
    |      s  * 关闭服务器        php  * 查看php版本      ----  * 功能开发中    |
    |      r  * 重启服务器        ini  * 配置php.ini      ----  * 功能开发中    |
-   |    add  * 添加新站点       ----  * 功能开发中       ----  * 功能开发中    |
+   |    add  * 添加新站点       onek  * 站点一键包       ----  * 功能开发中    |
    |   sset  * 手动配置站点*    ----  * 功能开发中     siscon  * 常用系统设置  |
    |    ssl  * 配置ssl证书      live  * 开始直播        clean  * 清理服务器    |
    |    sql  * SQL功能列表     lived  * 结束直播        chown  * 重置网站权限  |
@@ -180,7 +180,7 @@ add()(      ##添加新站点
     ##[ -z "$DN" ] && read -e -p '请输入新域名: '  DN
     ## 注：|| 表示如果 左边命令不成功，则接着执行右边命令
     while test -z "$SITE" ; do  ##检查$SITE变量是否存在
-    echo "$DN" | grep -q -E '^[.a-zA-Z0-9_]+[.a-z]$' && { ##合法的有效域名
+    echo "$DN" | grep -q -E "^[.a-zA-Z0-9_]+\.[a-z]{2,5}$" && { ##合法的有效域名
         SITE="$DN"
         echo 将使用$SITE作为站点绑定的域名
     } || {  ##不合法的
@@ -201,9 +201,6 @@ add()(      ##添加新站点
                 }
         }
     done
-    ##echo "$DN" | grep -q -E '^[.a-zA-Z0-9_]+(.com|.info)$' || {
-    ##    exit
-    ##}
     ## 注：grep 带参数 -r 会在目录及子目录递归搜索
     ##          带参数 -E 可以用正则表达式搜索，其中 ^ 表示行开头， \s 表示空白字符，
     ##          ^\s* 则用来表示一行开头有任意个空白字符
@@ -425,7 +422,7 @@ adusr()(  ##添加一个新用户并配置数据库权限
         PASSWORD=$( head -c 22 /dev/urandom | base64 | head -c 20 )
     }
     sudo mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
-    echo 用户 $USERNAME 创建成功,密码为$PASSWORD
+    echo "用户 $USERNAME 创建成功,密码为$PASSWORD"
     SL=""
     read -e -p "是否需要绑定数据库权限？(Y/n)" SL
     echo "$SL1" | grep -q -E '^[Nn]$' && {
@@ -443,7 +440,7 @@ adusr()(  ##添加一个新用户并配置数据库权限
         }
         sudo mysql -e "grant select,insert,update,create,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
     }
-    flush
+    _flush
 )
 
 rmusr()(  ##移除一个用户并询问移除同名数据库
@@ -515,7 +512,7 @@ addsql()( ##手动添加一个数据库
     echo "完成，数据库名为$DATABASENAME
       用户名为$USERNAME
       密码为$PASSWORD"
-    flush
+    _flush
 )
 
 delsql()( ##手动移除一个数据库
@@ -534,7 +531,7 @@ delsql()( ##手动移除一个数据库
             }
         }
     }
-    
+    _flush
 )
 
 conf()(   ##数据库设置（虽然不知道应该放些什么进去）
@@ -613,6 +610,30 @@ php()(
 ini()(      ##打开php.ini
     echo 查看 php.ini 
     nano $PI
+)
+
+onek()(     ##网站一键包
+            ##姑且定义一个api好了，调用的文件是~/.yukicpl/tool/里的文件
+            ##使用命令行传参的方式接入本面板，目前的设定是数据库和建站的部分由本面板完成
+            ##然后站点程序的部署和设置由上面那个文件夹里的脚本实现。
+            ##参数共有7个，分别是传参标记，站点域名，站点根目录，数据库类型，[数据库名，数据库用户名，数据库用户密码]
+            ##传参标记为 “-flag.on.(站点程序名)”
+            ##如创建一个wordpress的站点，域名为test.example.com，路径为/yuki/site/text.example.com/，使用mysql数据库，数据库名、用户名、密码为test，则请求应为
+            ##onekey.sh -flag.on.wordpress test.example.com /yuki/site/text.example.com/ mysql test test test
+    echo '
+     ///////////////////////[ 初雪服务器控制面板 一键包 ]\\\\\\\\\\\\\\\\\\\\\\\
+     ***********************[ Yuki  One-Key  make  site ]***********************
+     ===========================================================================
+    |      wp * Wordpress             * 自动部署               * 安装SS服务端*  |
+    |      pw * phpWind               * 功能开发中             * 卸载SS服务端*  |
+    |         * 修改设置              * 功能开发中       back  * 返回主菜单     |
+     ==========================================================================='
+    read -e -p "请选择你需要的  >" OK
+    test "$OK" = back && {
+        return 1
+    } || {
+        true
+    }
 )
 
 live()(     ##开启直播服务器
@@ -746,7 +767,7 @@ timea()( ##修改时区
 )
 
 ##给常用系统设置功能用的命令##
-clean()(
+clean()(        ##待优化
     echo 本操作将会清理所有网站目录/数据库/ftp信息，同时卸载nginx环境/php环境/mysql环境/sqlite环境
     echo 不会删除控制面板文件，适合打算初始化服务器的情景使用
     echo 请确定已完成数据/文件备份，本程序执行后，一切有关文件将会全部被移除
@@ -785,7 +806,7 @@ clean()(
     )
 
 chown()(
-    echo 使用本工具重置所有在$WR文件夹中的文件的所属权限归www所有
+    echo 使用本工具将重置所有在$WR文件夹中的文件的所属权限归www所有
     /bin/chown -R www-data "$WR"
     echo 完成
 )
