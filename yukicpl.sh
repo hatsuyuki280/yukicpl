@@ -120,7 +120,6 @@ OOO
     ##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
     LP="/yuki/live/MonaServer-master/MonaServer"
 
-
 ##程序本体部分~~~
 help()(
 echo '
@@ -767,6 +766,7 @@ timea()( ##修改时区
 )
 
 ##给常用系统设置功能用的命令##
+
 clean()(        ##待优化
     echo 本操作将会清理所有网站目录/数据库/ftp信息，同时卸载nginx环境/php环境/mysql环境/sqlite环境
     echo 不会删除控制面板文件，适合打算初始化服务器的情景使用
