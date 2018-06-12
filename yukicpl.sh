@@ -78,20 +78,20 @@ test -e ~/.yukicpl/yukicpl.conf || {    ##启动检测
 
     mkdir -p ~/.yukicpl
     cat >> ~/.yukicpl/yukicpl.conf <<OOO
-    ##这是默认的一级域名部分
-    DDN="$input_1"   ##请务必修改的部分
+##这是默认的一级域名部分
+DDN="$input_1"   ##请务必修改的部分
 
-    ##这是默认网站所在的目录(绝对路径，以"/"开始，不要以"/"结尾)
-    WR="$input_2"     ##请务必修改的部分
+##这是默认网站所在的目录(绝对路径，以"/"开始，不要以"/"结尾)
+WR="$input_2"     ##请务必修改的部分
 
-    ##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
-    LP="$input_3"
+##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
+LP="$input_3"
 
-    ##是否使用Mysql
-    Sqlt="$input_4"
+##是否使用Mysql
+Sqlt="$input_4"
 
-    ##mySql数据文件将在这里
-    Sqlp="$input_5"
+##mySql数据文件将在这里
+Sqlp="$input_5"
 OOO
     input_1=""
     input_2=""
@@ -103,22 +103,23 @@ OOO
 
 ##设置部分↓↓↓
 
-    ##将会从配置文件读取
-    source ~/.yukicpl/yukicpl.conf
-    ##这是ngnix的设置文件夹(绝对路径，以"/"开始，不要"/"结尾)
-    NGSR="/etc/nginx"   ##此项开始以下为如果不确定请保持默的部分
+##将会从配置文件读取
+source ~/.yukicpl/yukicpl.conf
+##这是ngnix的设置文件夹(绝对路径，以"/"开始，不要"/"结尾)
+NGSR="/etc/nginx"   ##此项开始以下为如果不确定请保持默的部分
 
-    ##这是PHP的路径(绝对路径，以"/"开始，以响应PHP指令的文件结尾)
-    PP="/etc/init.d/php7.0-fpm"
+##这是PHP的路径(绝对路径，以"/"开始，以响应PHP指令的文件结尾)
+PP="/etc/init.d/php7.0-fpm"
 
-    ##这是nginx的位置，用来执行重启、启用、停止、重载(绝对路径，以"/"开始，"nginx"结尾)
-    NGP="/etc/init.d/nginx"
+##这是nginx的位置，用来执行重启、启用、停止、重载(绝对路径，以"/"开始，"nginx"结尾)
+NGP="/etc/init.d/nginx"
 
-    ##这是PHP.ini的位置(以"/"开头，以php.ini结尾)
-    PI="/etc/php/7.0/fpm/php.ini"
+##这是PHP.ini的位置(以"/"开头，以php.ini结尾)
+PI="/etc/php/7.0/fpm/php.ini"
 
-    ##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
-    LP="/yuki/live/MonaServer-master/MonaServer"
+##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
+LP="/yuki/live/MonaServer-master/MonaServer"
+
 
 ##程序本体部分~~~
 help()(
@@ -623,7 +624,7 @@ onek()(     ##网站一键包
      ///////////////////////[ 初雪服务器控制面板 一键包 ]\\\\\\\\\\\\\\\\\\\\\\\
      ***********************[ Yuki  One-Key  make  site ]***********************
      ===========================================================================
-    |      wp * Wordpress             * 自动部署               * 安装SS服务端*  |
+    |      wp * Wordpress             * 功能开发中             * 安装SS服务端*  |
     |      pw * phpWind               * 功能开发中             * 卸载SS服务端*  |
     |         * 修改设置              * 功能开发中       back  * 返回主菜单     |
      ==========================================================================='
@@ -766,8 +767,7 @@ timea()( ##修改时区
 )
 
 ##给常用系统设置功能用的命令##
-
-clean()(        ##待优化
+clean()(
     echo 本操作将会清理所有网站目录/数据库/ftp信息，同时卸载nginx环境/php环境/mysql环境/sqlite环境
     echo 不会删除控制面板文件，适合打算初始化服务器的情景使用
     echo 请确定已完成数据/文件备份，本程序执行后，一切有关文件将会全部被移除
@@ -806,9 +806,8 @@ clean()(        ##待优化
     )
 
 chown()(
-    echo 使用本工具将重置所有在$WR文件夹中的文件的所属权限归www所有
-    /bin/chown -R www-data "$WR"
-    echo 完成
+    echo 使用本工具可以重置所有在$WR文件夹中的文件的所属权限归www所有
+     /bin/chown -R www-data "$WR"
 )
 
 dnc()(   ##更换域名
