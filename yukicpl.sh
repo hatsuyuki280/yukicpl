@@ -380,7 +380,7 @@ sqls()(   ##停止sql
 sqlr()(   ##重启sql
     echo 正在重启sql
     service mysqld restart
-    sql服务器已重新启动
+    echo sql服务器已重新启动
 )
 
 sqlb()(   ##备份/导出
