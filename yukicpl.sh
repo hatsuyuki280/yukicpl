@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #!/bin/bash
 ##雪次元服务器管理面板位于 
 ## 注： xxx()( yyyy; ) 或 xxx(){ yyyy; } 表示定义 bash 函数，函数名 xxx，函数内容为执行 yyyy
