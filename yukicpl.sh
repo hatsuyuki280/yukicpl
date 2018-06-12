@@ -78,20 +78,20 @@ test -e ~/.yukicpl/yukicpl.conf || {    ##启动检测
 
     mkdir -p ~/.yukicpl
     cat >> ~/.yukicpl/yukicpl.conf <<OOO
-##这是默认的一级域名部分
-DDN="$input_1"   ##请务必修改的部分
+    ##这是默认的一级域名部分
+    DDN="$input_1"   ##请务必修改的部分
 
-##这是默认网站所在的目录(绝对路径，以"/"开始，不要以"/"结尾)
-WR="$input_2"     ##请务必修改的部分
+    ##这是默认网站所在的目录(绝对路径，以"/"开始，不要以"/"结尾)
+    WR="$input_2"     ##请务必修改的部分
 
-##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
-LP="$input_3"
+    ##这里是MonaServer的安装路径(执行文件应在这个文件夹里，否则将会自动部署nginx直播服务器)，直播用
+    LP="$input_3"
 
-##是否使用Mysql
-Sqlt="$input_4"
+    ##是否使用Mysql
+    Sqlt="$input_4"
 
-##mySql数据文件将在这里
-Sqlp="$input_5"
+    ##mySql数据文件将在这里
+    Sqlp="$input_5"
 OOO
     input_1=""
     input_2=""
