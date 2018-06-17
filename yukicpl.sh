@@ -447,6 +447,8 @@ adusr()(  ##添加一个新用户并配置数据库权限
 )
 
 rmusr()(  ##移除一个用户并询问移除同名数据库
+    echo "请从已有列表中选择一个用户并输入全名"
+    mysql -e "select distinct user from mysql.user;"
     mysql -e "revoke select,insert,update,delete on $DATABASENAME.* from '$USERNAME'@'host';"
     echo "$SL1" | grep -q -E '^[Nn]$'
 )
