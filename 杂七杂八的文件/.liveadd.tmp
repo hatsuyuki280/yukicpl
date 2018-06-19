@@ -31,7 +31,7 @@ mysql 删除用户
 mysql -e "drop user '$USERNAME'@localhost;"
 
 把某数据库（及其下边的表）授权给某用户
-mysql -e "grant select,insert,update,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
+mysql -e "grant create,select,insert,update,delete on $DATABASENAME.* to '$USERNAME'@'localhost' "
 
 取消授权
-mysql -e "revoke select,insert,update,delete on $DATABASENAME.* from '$USERNAME'@'host';"
+mysql -e "revoke create,select,insert,update,delete on $DATABASENAME.* from '$USERNAME'@'host';"
