@@ -30,7 +30,7 @@ setup()(    ##执行安装操作&进行设置
             >" password
         done
     } || {
-
+    ture
     }
     test 
     echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  | sudo tee /etc/apt/sources.list.d/stretch-backports.list
