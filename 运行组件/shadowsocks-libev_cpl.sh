@@ -72,7 +72,10 @@ sysctl net.ipv4.tcp_congestion_control=bbr | grep -q sysctl: || {
     echo "net.core.default_qdisc = fq" >> /etc/sysctl.conf
     echo "net.ipv4.tcp_congestion_control = bbr" >> /etc/sysctl.conf
     sysctl -p
-})
+}
+##启动
+systemctl restart shadowsocks-libev
+)
 
 
 echo " $@" | grep -q ' -t' && TEST=1    ## 如果启动命令行参数有 -t 则使用测试模式，不执行命令
