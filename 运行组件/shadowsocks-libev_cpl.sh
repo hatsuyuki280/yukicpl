@@ -30,7 +30,7 @@ setup()(    ##执行安装操作&进行设置
             >" password
         done
     } || {
-
+    ture
     }
     test 
     echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  | sudo tee /etc/apt/sources.list.d/stretch-backports.list
@@ -72,7 +72,10 @@ sysctl net.ipv4.tcp_congestion_control=bbr | grep -q sysctl: || {
     echo "net.core.default_qdisc = fq" >> /etc/sysctl.conf
     echo "net.ipv4.tcp_congestion_control = bbr" >> /etc/sysctl.conf
     sysctl -p
-})
+}
+##启动
+systemctl restart shadowsocks-libev
+)
 
 
 echo " $@" | grep -q ' -t' && TEST=1    ## 如果启动命令行参数有 -t 则使用测试模式，不执行命令
