@@ -859,7 +859,7 @@ _vpntest()(
 _check_nginx(){
     ## 检测 nginx、php-fpm 等
     { which nginx && which php-fpm7.0 && { echo /etc/php/7.0/mods-available/* | grep gd.ini | grep sqlite3.ini | grep mbstring.ini ; }
-    } >/dev/null || apt install -y  nginx-full php-fpm php-cgi php-curl php-gd php-mcrypt php-mbstring php-sqlite3 ##php7.0-mysql
+    } >/dev/null || apt install -y  nginx-full php-fpm php-cgi php-curl php-gd php-mcrypt php-mbstring php-sqlite3 php-zip ##php7.0-mysql
     _check_mysql
 }
 
