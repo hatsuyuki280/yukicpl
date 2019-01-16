@@ -21,6 +21,7 @@ test "$install" = "fail" || {
 }
 
 ##基础配置
+dn="yuki233.com"
 port="8080" ##端口
 cqdir="/yuki/bot/coolq-data"    ##酷q的数据文件夹
 PW="yuki233.com"    ##远程管理的时候的密码
@@ -40,11 +41,34 @@ cat /etc/nginx/nginx.conf | grep -q -E 'close' && {
     echo " nginx.conf 中 websocket 相关的设置未更改，如过 websocket 无法正常工作，请手动添加"
 } || {
     echo " nginx.conf 中 websocket 相关的设置已添加"
-    
+    cat >> /etc/nginx/nginx.conf << OOO
+        http{
+            ##
+            #take http-head to support WebSocket
+            ##
+
+            map $http_upgrade $connection_upgrade {
+                default upgrade;
+                '' close;
+            }
+        
+
+OOO
+    cat >> /etc/nginx/site-enable/$name.conf << OOO
+        server {
+            server_name $name.$dn;
+            location / {
+                proxy_pass http://localhost:$port;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+            }
+        }
+OOO
 }
 
 ##su - dockers -c "docker run --name=cq_peipei -d -p 23380:9000 -v /yuki/bot/coolq-data/cq-pei:/home/user/coolq -e VNC_PASSWD=k79muj87823 -e COOLQ_ACCOUNT=671116825 -e COOLQ_URL='http://dlsec.cqp.me/cqp-xiaoi'  coolq/wine-coolq"
-
+##su - dockers -c "docker run --name=cq-yuki2 -d -p 23333:9000 -v /yuki/bot/coolq-data/cq-yuki2:/home/user/coolq -e VNC_PASSWD=yuki280 -e COOLQ_ACCOUNT=227652035 -e COOLQ_URL=http://dlsec.cqp.me/cqp-xiaoi coolq/wine-coolq"
 ##杀死所有正在运行的容器
 # docker kill $(docker ps -a -q)
 
