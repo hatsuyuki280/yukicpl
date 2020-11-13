@@ -1,4 +1,7 @@
 # yukicpl自述文件 -yukicpl Readme-
+
+---
+
 [for English](https://github.com/hatsuyuki280/yukicpl/MISC/Readme_en.md)  
 [日本語説明](https://github.com/hatsuyuki280/yukicpl/MISC/Readme_jp.md)
 ### 简介
@@ -10,6 +13,8 @@ yukicpl 全称 初雪的服务器管理面板。
 设计之初并未考虑到与其他面板的兼容问题，因此推荐仅使用一种管理面板且不要在工作中的环境下运行。  
 亦不保证不会引起任何安全问题。由于执行诸操作时需要使用 root 权限，因此如果需要在生产环境下使用，请务必在征得系统管理员的许可，且理解可能存在的风险的前提下进行使用。  
 有本面板引起的一切损失，咱一概不负责任。  
+
+---
 
 ### 安装
 请从[install.sh](https://github.com/hatsuyuki280/yukicpl/MISC/install.sh)开始体验。  
@@ -27,6 +32,8 @@ sudo su -c "bash <(wget -qO- https://github.com/hatsuyuki280/yukicpl/blob/master
 完成安装后将会看到如下提示：
 ```安装完成，在当前终端输入 yukicpl 即可启动```
 
+---
+
 ### 使用 (未完成)
 完成安装后， yukicpl 将会被安装至 /usr/local/bin/ 目录中，其他额外的面板组件将会位于 /usr/local/lib/yukicpl/ 目录中 ，配置文件将位于 /etc/yukicpl/ 目录中。  
 其他使用到的软件将会安装至 apt 的默认安装目录。本面板管理的站点/其他非 apt 安装的后端，默认将会位于 /yuki/ 目录，此目录将会在第一次启动时询问用户是否需要修改。  
@@ -39,8 +46,12 @@ sudo su -c "bash <(wget -qO- https://github.com/hatsuyuki280/yukicpl/blob/master
 
 本面板正常运行后将会显示功能选单，根据功能选单的提示在本面板的输入区内输入指定的命令即可执行该功能。  
 
+---
+
 #### 快速功能 (未完成)
 当前正在计划中的功能，完成后将更新此段落。敬请期待。  
+
+---
 
 ### 卸载 (未完成)
 出于安全考虑已移除旧版 yukicpl 内的一键跑路功能。
