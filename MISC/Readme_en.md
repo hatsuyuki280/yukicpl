@@ -2,8 +2,8 @@
 
 ---
 
-* [汉语说明](https://github.com/hatsuyuki280/yukicpl/ReadMe.md)  
-* [日本語説明](https://github.com/hatsuyuki280/yukicpl/MISC/Readme_jp.md)  
+* [汉语说明](https://github.com/hatsuyuki280/yukicpl/blob/master/ReadMe.md)  
+* [日本語説明](https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/Readme_jp.md)  
 ### 简介
 yukicpl 全称 初雪的服务器管理面板。  
 简单的来说，只是为了方便咱自己日常使用/快速安装各种环境的一键脚本的集合。目前预计的目标系统是 Debian >= 9 的X86平台，其他平台不保证能运行。  
@@ -17,17 +17,17 @@ yukicpl 全称 初雪的服务器管理面板。
 ---
 
 ### 安装
-请从[install.sh](https://github.com/hatsuyuki280/yukicpl/MISC/install.sh)开始体验。  
+请从[install.sh](https://github.com/hatsuyuki280/yukicpl/blob/masterMISC/install.sh)开始体验。  
 或使用如下命令：
 ```
 ## 注意，这将请求你的用户密码/root密码，并以root权限运行 install.sh 请在运行前检视代码。
-sudo su -c "bash <(wget -qO- https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/install.sh)"
+sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/hatsuyuki280/yukicpl/master/MISC/install.sh)"
 ```
-如无其他需求，将仅会下载[yukicpl.sh](https://github.com/hatsuyuki280/yukicpl/yukicpl.sh)进行使用，其他关联文件将会在第一次使用该功能时自动下载。  
+如无其他需求，将仅会下载[yukicpl.sh](https://github.com/hatsuyuki280/yukicpl/blob/master/yukicpl.sh)进行使用，其他关联文件将会在第一次使用该功能时自动下载。  
 如果需要一次性下载所有文件，请运行：
 ```
 ## 注意，这将请求你的用户密码/root密码，并以root权限运行 install.sh 请在运行前检视代码。
-sudo su -c "bash <(wget -qO- https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/install_full.sh)"
+sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/hatsuyuki280/yukicpl/master/MISC/install_full.sh)"
 ```
 完成安装后将会看到如下提示：
 ```安装完成，在当前终端输入 yukicpl 即可启动```
@@ -55,12 +55,12 @@ sudo su -c "bash <(wget -qO- https://github.com/hatsuyuki280/yukicpl/blob/master
 
 ### 卸载 (未完成)
 出于安全考虑已移除旧版 yukicpl 内的一键跑路功能。
-如需移除本面板请从[uninstall.sh](https://github.com/hatsuyuki280/yukicpl/MISC/uninstall.sh)开始。  
+如需移除本面板请从[uninstall.sh](https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/uninstall.sh)开始。  
 或使用如下命令：
 ```
 ## 注意，这将请求你的用户密码/root密码，并以root权限运行 uninstall.sh 请在运行前检视代码。
 ## 该脚本确认执行后将会杀掉所有名称包含 yukicpl 的进程，为了防止不必要的损失，被询问是否终止进程时，请确实检查显示出来的进程列表。
-sudo su -c "bash <(wget -qO- https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/uninstall.sh)"
+sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/hatsuyuki280/yukicpl/master/MISC/uninstall.sh)"
 ```
 请根据卸载向导的提示完成卸载。  
 **重要提示**
