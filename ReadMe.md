@@ -2,8 +2,8 @@
 
 ---
 
-[for English](https://github.com/hatsuyuki280/yukicpl/MISC/Readme_en.md)  
-[日本語説明](https://github.com/hatsuyuki280/yukicpl/MISC/Readme_jp.md)
+* [for English](https://github.com/hatsuyuki280/yukicpl/MISC/Readme_en.md)  
+* [日本語説明](https://github.com/hatsuyuki280/yukicpl/MISC/Readme_jp.md)
 ### 简介
 yukicpl 全称 初雪的服务器管理面板。  
 简单的来说，只是为了方便咱自己日常使用/快速安装各种环境的一键脚本的集合。目前预计的目标系统是 Debian >= 9 的X86平台，其他平台不保证能运行。  
