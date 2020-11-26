@@ -1,6 +1,9 @@
 #!/bin/bash
 
 test -a /usr/bin/sudo || sudo()( su -c "$@";)   ##自动申请sudo权限
+test -e /etc/yukicpl/yukicpl.conf && source /etc/yukicpl/yukicpl.conf || 
+
+
 
 ##程序本体部分~~~
 help()(
@@ -19,7 +22,7 @@ help    ##帮助
 while true; do
     [ -z "$HELPED" ] && echo '查看帮助请输入 help'
     HELPED=1
-    read -e -p '请输入S命令> ' CMD
+    read -e -p '请输入命令> ' CMD
     [ "$CMD" = quit ] && quit
     [ "$CMD" =    q ] && quit
     ## 检测输入的命令有没有存在对应函数
