@@ -15,7 +15,7 @@ cloudflare_auth = { 'X-Auth-Email': "",
 # change this part only for you know what you do 
 ###
 get_ip_from = {'v4': "https://api-ipv4.ip.sb/jsonip", 'v6': "https://api-ipv6.ip.sb/jsonip"}     # please set api full-uri to get json.
-ip_index_name = ["ip"]    # please set index in this var, if have more than 1 level index, pleas set all use array formart.
+ip_index_name = "ip"    # please set index in this var.
 cloudflare_api_base_url = "https://api.cloudflare.com/client/v4/"
 http_header = {'Content-Type': "application/json"}
 
@@ -44,3 +44,18 @@ try:
 except:
     ipv6 = ipaddress.IPv6Address('::1')
     print("Can't get IPv6, Will not change any thing")
+
+###
+# Def Push_to_cf method
+###
+def push_to_cf(ipaddr):
+    True
+
+###
+# Make sure IP is not Local Link
+###
+if ipv4.is_global or ipv6.is_global :
+    push_to_cf([ipaddr.compressed for ipaddr in [ipv4,ipv6] if ipaddr.is_global])
+else:
+    print('You Have NO Global IP Address')
+    exit(4)
