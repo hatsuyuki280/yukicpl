@@ -1,0 +1,101 @@
+{
+    "name": "/",
+    "dest": "Root File System, in Linux is '/'.",
+    "type": "rootfs",
+    "len": 3,
+    "ma_ver":0,
+    "version":0.1,
+    "update_url":"https://yukicpl.yuki233.com/dist",
+    "dist":"dev",
+    "include": [
+        {
+            "name": "usr",
+            "dest": "is /usr dict",
+            "type": "dict",
+            "len": 1,
+            "include": [
+                {
+                    "name": "local",
+                    "dest": "is /usr/local dict",
+                    "type": "dict",
+                    "len": 2,
+                    "include": [
+                        {
+                            "name": "bin",
+                            "dest": "is /usr/local/bin dict, yukicpl main file in here",
+                            "type": "dict",
+                            "len": 1,
+                            "include": [
+                                {
+                                    "name": "yukicpl",
+                                    "dest": "is Yukicpl main exec file",
+                                    "type": "exec_file",
+                                    "len": 0,
+                                    "uri": "bin/yukicpl.sh"
+                                }
+                            ]
+                        },
+                        {
+                            "name":"lib",
+                            "dest":"is /usr/local/lib dict",
+                            "type":"dict",
+                            "len":1,
+                            "include":[
+                                {
+                                    "name":"yukicpl",
+                                    "dest":"is /usr/local/lib/yukicpl dict, all option yukicpl contents in here",
+                                    "type":"dict",
+                                    "len":-1,
+                                    "include":[
+                                        {
+                                            "name":"cf-ddns",
+                                            "dest":"option yukicpl contents in here",
+                                            "type":"exec_file",
+                                            "len":0,
+                                            "uri":"lib/cf-ddns.sh"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "yukicpl",
+            "dest": "This dict is Yukicpl generated data files.",
+            "type": "dict",
+            "len": 3,
+            "include": [
+                {
+                    "name": "site",
+                    "dest": "This dict is Yukicpl generated Web site files.",
+                    "type": "dict",
+                    "len": -1,
+                    "include": [
+                        {}
+                    ]
+                },
+                {
+                    "name": "ssl",
+                    "dest": "This dict is Yukicpl saved SSL Cert/Key files.",
+                    "type": "dict",
+                    "len": -1,
+                    "include": [
+                        {}
+                    ]
+                },
+                {
+                    "name": "opt",
+                    "dest": "This dict is Yukicpl generated Web site or services backend.",
+                    "type": "dict",
+                    "len": -1,
+                    "include": [
+                        {}
+                    ]
+                }
+            ]
+        }
+    ]
+}
