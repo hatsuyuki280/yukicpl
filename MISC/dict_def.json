@@ -76,15 +76,14 @@
                         {
                             "name":"aria2.conf",
                             "dest":"aria2.conf in here",
-                            "type":"conf",
+                            "type":"etc",
                             "len":0,
                             "uri":"misc/aria2.conf"
                         },{
                             "name":"aria2.session",
                             "dest":"aria2.session in here",
                             "type":"none",
-                            "len":0,
-                            "uri":"misc/aria2.session"
+                            "len":0
                         }
                     ]
                 }
