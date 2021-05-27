@@ -45,11 +45,11 @@
                                     "name":"yukicpl",
                                     "dest":"is /usr/local/lib/yukicpl dict, all option yukicpl contents in here",
                                     "type":"dict",
-                                    "len":-1,
+                                    "len":1,
                                     "include":[
                                         {
                                             "name":"cf-ddns",
-                                            "dest":"option yukicpl contents in here",
+                                            "dest":"cloudflare ddns script",
                                             "type":"exec_file",
                                             "len":0,
                                             "uri":"lib/cf-ddns.sh"
@@ -57,6 +57,34 @@
                                     ]
                                 }
                             ]
+                        }
+                    ]
+                }
+            ]
+        },{
+            "name": "etc",
+            "dest": "is /etc dict",
+            "type": "dict",
+            "len": 1,
+            "include":[
+                {
+                    "name": "aria2",
+                    "dest": "is /etc/aria2 dict, will save aria2.conf and aria2.session",
+                    "type": "dict",
+                    "len": 2,
+                    "include":[
+                        {
+                            "name":"aria2.conf",
+                            "dest":"aria2.conf in here",
+                            "type":"conf",
+                            "len":0,
+                            "uri":"misc/aria2.conf"
+                        },{
+                            "name":"aria2.session",
+                            "dest":"aria2.session in here",
+                            "type":"none",
+                            "len":0,
+                            "uri":"misc/aria2.session"
                         }
                     ]
                 }
@@ -89,6 +117,14 @@
                 {
                     "name": "opt",
                     "dest": "This dict is Yukicpl generated Web site or services backend.",
+                    "type": "dict",
+                    "len": -1,
+                    "include": [
+                        {}
+                    ]
+                },{
+                    "name": "log",
+                    "dest": "This dict is Yukicpl generated Web site or services log.",
                     "type": "dict",
                     "len": -1,
                     "include": [
