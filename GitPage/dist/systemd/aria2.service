@@ -1,0 +1,11 @@
+[Unit]
+Description=Aria2c download manager
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+ExecStart=/usr/bin/aria2c --conf-path=/etc/aria2.conf
+
+[Install]
+WantedBy=multi-user.target
