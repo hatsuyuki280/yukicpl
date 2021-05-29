@@ -37,13 +37,18 @@
                                 {   "name": "yukicpl",
                                     "dest": "is /usr/local/lib/yukicpl dict, all option yukicpl contents in here",
                                     "type": "dict",
-                                    "len": 1,
+                                    "len": 2,
                                     "include": [
                                         {   "name": "cf-ddns",
                                             "dest": "cloudflare ddns script",
                                             "type": "exec_file",
                                             "len": 0,
                                             "uri": "lib/cf-ddns.sh"
+                                        },{ "name": "Index-Generator",
+                                            "dest": "This is File Index Generator",
+                                            "len": 0,
+                                            "type": "exec_file",
+                                            "uri": "lib/File-Index-Generator.py"
                                         }
                                     ]
                                 }
