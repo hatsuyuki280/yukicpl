@@ -1,58 +1,49 @@
-{
-    "name": "/",
+{   "name": "/",
     "dest": "Root File System, in Linux is '/'.",
     "type": "rootfs",
     "len": 3,
-    "ma_ver":0,
-    "version":0.1,
-    "update_url":"https://yukicpl.yuki233.com/dist",
-    "dist":"dev",
+    "ma_ver": 0,
+    "version": 0.1,
+    "update_url": "https://yukicpl.yuki233.com/dist",
+    "dist": "dev",
     "include": [
-        {
-            "name": "usr",
+        {   "name": "usr",
             "dest": "is /usr dict",
             "type": "dict",
             "len": 1,
             "include": [
-                {
-                    "name": "local",
+                {   "name": "local",
                     "dest": "is /usr/local dict",
                     "type": "dict",
                     "len": 2,
                     "include": [
-                        {
-                            "name": "bin",
+                        {   "name": "bin",
                             "dest": "is /usr/local/bin dict, yukicpl main file in here",
                             "type": "dict",
                             "len": 1,
                             "include": [
-                                {
-                                    "name": "yukicpl",
+                                {   "name": "yukicpl",
                                     "dest": "is Yukicpl main exec file",
                                     "type": "exec_file",
                                     "len": 0,
                                     "uri": "bin/yukicpl.sh"
                                 }
                             ]
-                        },
-                        {
-                            "name":"lib",
-                            "dest":"is /usr/local/lib dict",
-                            "type":"dict",
-                            "len":1,
-                            "include":[
-                                {
-                                    "name":"yukicpl",
-                                    "dest":"is /usr/local/lib/yukicpl dict, all option yukicpl contents in here",
-                                    "type":"dict",
-                                    "len":1,
-                                    "include":[
-                                        {
-                                            "name":"cf-ddns",
-                                            "dest":"cloudflare ddns script",
-                                            "type":"exec_file",
-                                            "len":0,
-                                            "uri":"lib/cf-ddns.sh"
+                        },{ "name": "lib",
+                            "dest": "is /usr/local/lib dict",
+                            "type": "dict",
+                            "len": 1,
+                            "include": [
+                                {   "name": "yukicpl",
+                                    "dest": "is /usr/local/lib/yukicpl dict, all option yukicpl contents in here",
+                                    "type": "dict",
+                                    "len": 1,
+                                    "include": [
+                                        {   "name": "cf-ddns",
+                                            "dest": "cloudflare ddns script",
+                                            "type": "exec_file",
+                                            "len": 0,
+                                            "uri": "lib/cf-ddns.sh"
                                         }
                                     ]
                                 }
@@ -61,68 +52,56 @@
                     ]
                 }
             ]
-        },{
-            "name": "etc",
+        },{ "name": "etc",
             "dest": "is /etc dict",
             "type": "dict",
             "len": 1,
-            "include":[
-                {
-                    "name": "aria2",
+            "include": [
+                {   "name": "aria2",
                     "dest": "is /etc/aria2 dict, will save aria2.conf and aria2.session",
                     "type": "dict",
                     "len": 2,
-                    "include":[
-                        {
-                            "name":"aria2.conf",
-                            "dest":"aria2.conf in here",
-                            "type":"etc",
-                            "len":0,
-                            "uri":"misc/aria2.conf"
-                        },{
-                            "name":"aria2.session",
-                            "dest":"aria2.session in here",
-                            "type":"none",
-                            "len":0
+                    "include": [
+                        {   "name": "aria2.conf",
+                            "dest": "aria2.conf in here",
+                            "type": "etc",
+                            "len": 0,
+                            "uri": "conf/aria2.conf"
+                        },{ "name": "aria2.session",
+                            "dest": "aria2.session in here",
+                            "type": "none",
+                            "len": 0
                         }
                     ]
                 }
             ]
-        },
-        {
-            "name": "yukicpl",
+        },{ "name": "yukicpl",
             "dest": "This dict is Yukicpl generated data files.",
             "type": "dict",
             "len": 3,
             "include": [
-                {
-                    "name": "site",
+                {   "name": "site",
                     "dest": "This dict is Yukicpl generated Web site files.",
                     "type": "dict",
                     "len": -1,
                     "include": [
                         {}
                     ]
-                },
-                {
-                    "name": "ssl",
+                },{ "name": "ssl",
                     "dest": "This dict is Yukicpl saved SSL Cert/Key files.",
                     "type": "dict",
                     "len": -1,
                     "include": [
                         {}
                     ]
-                },
-                {
-                    "name": "opt",
+                },{ "name": "opt",
                     "dest": "This dict is Yukicpl generated Web site or services backend.",
                     "type": "dict",
                     "len": -1,
                     "include": [
                         {}
                     ]
-                },{
-                    "name": "log",
+                },{ "name": "log",
                     "dest": "This dict is Yukicpl generated Web site or services log.",
                     "type": "dict",
                     "len": -1,
