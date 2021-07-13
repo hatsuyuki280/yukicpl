@@ -1,9 +1,11 @@
+---
+description: Japanese Readme.
+---
+
 # yukicpl自述文件 -yukicpl Readme-
 
 ---
 
-* [for English](https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/Readme_en.md)  
-* [汉语说明](https://github.com/hatsuyuki280/yukicpl/blob/master/ReadMe.md)  
 ### 紹介
 yukicplとは「初雪のコントロールパネル」である。  
 簡単に言えば、元々自分用に作った、便利なスクリプトの集合みたいなもんです。
