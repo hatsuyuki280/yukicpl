@@ -1,7 +1,3 @@
----
-description: English Readme.
----
-
 # yukicpl自述文件 -yukicpl Readme-
 
 ---
