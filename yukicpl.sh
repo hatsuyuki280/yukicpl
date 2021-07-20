@@ -1,22 +1,23 @@
 #!/bin/bash
 
-test -a /usr/bin/sudo || sudo()( su -c "$@";)   ##自动申请sudo权限
-test -e /etc/yukicpl/yukicpl.conf && source /etc/yukicpl/yukicpl.conf || 
-
-
-
+###
+# pre_test
+###
+test -a /usr/bin/sudo || sudo()( su -c "$@";)
+test -e /etc/yukicpl/yukicpl.conf || {
+    echo "未找到配置文件,执行初始化"
+    test -e /usr/local/lib/yukicpl/init.sh
+}
+source /etc/yukicpl/yukicpl.conf
 ##程序本体部分~~~
 help()(
 echo 'Writing now'
 )
 
-back()(     ##返回主菜单
-    help
-)
-
 ####################我是分割线####################
 
-echo " $@" | grep -q ' --test' && TEST=1    ## 如果启动命令行参数有 -t 则使用测试模式，不执行命令
+echo "$@" | grep -q -- '--test' && TEST=1    ## 如果启动命令行参数有 --test 则使用测试模式，不执行命令
+echo "$@" | grep -q -- '--help' && help
 
 help    ##帮助
 while true; do
