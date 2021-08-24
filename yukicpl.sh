@@ -6,18 +6,18 @@ test -a /usr/bin/sudo || sudo()( su -c "$@";)
 ###
 ExFileIn="/usr/local/lib/yukicpl/"
 lang=$LANG
-echo $@ | grep -q -- "--ja-JP.UTF-8" && lang="ja-JP.UTF-8"
+echo $@ | grep -q -- "--ja_JP.UTF-8" && lang="ja_JP.UTF-8"
 echo $@ | grep -q -- "--C.UTF-8" && lang="C.UTF-8"
-echo $@ | grep -q -- "--zh-CN.UTF-8" && lang="zh-CN.UTF-8"
-echo $@ | grep -q -- "--ja" && lang="ja-JP.UTF-8"
+echo $@ | grep -q -- "--zh_CN.UTF-8" && lang="zh_CN.UTF-8"
+echo $@ | grep -q -- "--ja" && lang="ja_JP.UTF-8"
 echo $@ | grep -q -- "--en" && lang="C.UTF-8"
-echo $@ | grep -q -- "--zh" && lang="zh-CN.UTF-8"
+echo $@ | grep -q -- "--zh" && lang="zh_CN.UTF-8"
 
 ConfFileIn="/etc/yukicpl/yukicpl.conf"
 TraslateFile="/etc/yukicpl/yukicpl.$lang"
 DistChannel="dev"
 
-[ -f "$TraslateFile" ] && source "$TraslateFile" || { echo "Translate File Not Found.\nDownloading..."; lang="C.UTF-8"; wget "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang" -O "$TraslateFile"; }
+[ -f "$TraslateFile" ] && { source "$TraslateFile" } || { echo "Translate File Not Found.\nDownloading..."; lang="C.UTF-8"; wget "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang" -O "$TraslateFile"; }
 
 ###
 # pre-test and set env variables
