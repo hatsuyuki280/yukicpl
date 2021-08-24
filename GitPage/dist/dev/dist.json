@@ -1,0 +1,51 @@
+{
+    "type": "dir",
+    "channel":"dev",
+    "lastModified": "20210721",
+    "length":3,
+    "contents":[
+        {
+            "type": "dir",
+            "class":"bin",
+            "lastModified": "20210721",
+            "length":0,
+            "contents":[
+        
+            ]
+        },{
+            "type": "dir",
+            "class":"i18n",
+            "lastModified": "20210721",
+            "length":3,
+            "contents":[
+                {
+                    "type": "i18n",
+                    "locale":"zh-CN.UTF-8",
+                    "lastModified": "20210721",
+                    "isComplete":true,
+                    "url":"/dist/dev/i18n/yukicpl.zh_CN.UTF-8"
+                },{
+                    "type": "i18n",
+                    "locale":"ja-JP.UTF-8",
+                    "lastModified": "20210721",
+                    "isComplete":false,
+                    "url":"/dist/dev/i18n/yukicpl.ja-JP.UTF-8"
+                },{
+                    "type": "i18n",
+                    "locale":"en-US.UTF-8",
+                    "lastModified": "20210721",
+                    "isComplete":false,
+                    "url":"/dist/dev/i18n/yukicpl.en-US.UTF-8"
+                }
+            ]
+        },{
+            "type": "dir",
+            "class":"lib",
+            "lastModified": "20210721",
+            "length":0,
+            "contents":[
+        
+            ]
+        }
+    ]
+}

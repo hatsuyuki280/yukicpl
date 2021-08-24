@@ -1,0 +1,23 @@
+{
+    "type": "dir",
+    "lastModified": "20210721",
+    "length":3,
+    "contents":[
+        {
+            "type":"dir",
+            "channel":"dev",
+            "lastModified": "20210721",
+            "url":"/dist/dev"
+        },{
+            "type":"dir",
+            "channel":"lts",
+            "lastModified": "20210721",
+            "url":"/dist/lts"
+        },{
+            "type":"dir",
+            "channel":"misc",
+            "lastModified": "20210721",
+            "url":"/dist/etc"
+        }
+    ]
+}

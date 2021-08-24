@@ -1,0 +1,53 @@
+#/bin/bash
+
+###
+# Example Translation for Zh-cn
+###
+UpdatedDate='20210721'
+
+###
+# Yukicpl
+###
+LangTitle='Yukicpl'
+LangArgumentHelpTitle='帮助'
+LangArgumentHelpDescription='欢迎使用 Yukicpl(shellscript版)！
+'
+LangCanNotFound='无法找到'
+LangConfigureFiles='配置文件'
+LangInvalidArgumentGived='当前输入的参数无效，请尝试配合 --help 选项查看帮助。'
+LangArgumentGive='赋予参数'
+LangOption='选项'
+LangRequires='需要'
+LangContinueButton='继续'
+LangNoButton='不好'
+LangUsingTestMode='将会使用测试模式运行(不会实际执行任何命令)'
+
+
+###
+# init screen
+###
+LangStartToPreConfig='开始初始化设置界面'
+LangPleaseInput='请输入'
+LangPleaseSelect='请选择'
+LangDefaultPathToSiteFiles=''
+LangPleaseAcceptItBeforeUse='您需要在使用前接受这条免责声明'
+LangInitWelcomeMsg='欢迎使用 Yukicpl！
+由于我们没有找到你的配置文件，
+因此将会占用几分钟进行初始化向导'
+LangReadBeforeInitMsg='<!>免责声明<!>
+本程序的使用需要提前得到系统管理员的授权！
+以下内容是 Yukicpl Readme 中免责声明的摘要，请务必仔细阅读。
+> 本程序将需要使用到 root 权限
+> 请在正式使用前仔细检查所下载的脚本内容！
+> 本程序并不保证在任何平台/系统/软件环境上可用，\n  且没有进行过任何形式的兼容性测试。
+> 出于安全考虑，请不要在生产环境中运行。\n  (强烈！不推荐！)
+> 设计之初并未测试过与其他控制面板的兼容性，\n  因此推荐仅在干净的环境中使用。
+> 设计的目标系统是 Debian 10，\n  更新版本/更旧版本的兼容性不做保证。
+> 并未测试过对于 注入型攻击 的保护，\n  因此请不要传入不安全的参数！
+> 对于以上所述/未尽之风险，咱不负任何责任。'
+LangFunctionListLNMP='LNMP及管理工具'
+LangFunctionListOneKeyWWW='常用网站程序的一键部署工具'
+LangFunctionListCloudflared='Cloudflared相关的管理工具'
+LangFunctionListSoftEtherVPN='SoftEther服务器及管理工具'
+LangFunctionListSystemManagermentTools='常用的系统管理工具等'
+LangFunctionSelectScreenMsg='请使用方向键和空格键选择你需要的功能，详细说明请阅读网页指南。按回车键提交选择'

@@ -1,0 +1,40 @@
+#/bin/bash
+
+###
+# Example Translation for Zh-cn
+###
+UpdatedDate='20210721'
+
+###
+# Yukicpl
+###
+LangTitle=''
+LangArgumentHelpTitle=''
+LangArgumentHelpDescription=''
+LangCanNotFound=''
+LangConfigureFiles=''
+LangInvalidArgumentGived=''
+LangArgumentGive=''
+LangOption=''
+LangRequires=''
+LangContinueButton=''
+LangNoButton=''
+LangUsingTestMode=''
+
+
+###
+# init screen
+###
+LangStartToPreConfig=''
+LangPleaseInput=''
+LangPleaseSelect=''
+LangDefaultPathToSiteFiles=''
+LangPleaseAcceptItBeforeUse=''
+LangInitWelcomeMsg=''
+LangReadBeforeInitMsg=''
+LangFunctionListLNMP=''
+LangFunctionListOneKeyWWW=''
+LangFunctionListCloudflared=''
+LangFunctionListSoftEtherVPN=''
+LangFunctionListSystemManagermentTools=''
+LangFunctionSelectScreenMsg=''
