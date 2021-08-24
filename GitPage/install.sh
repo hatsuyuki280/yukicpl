@@ -52,7 +52,7 @@ install() {
     return 0
 }
 
-sucess() {
+success() {
     [ $lang = "zh_CN.UTF-8" ] && echo "安装完成，在当前终端输入 yukicpl 即可启动"
     [ $lang = "ja_JP.UTF-8" ] && echo "インストールが完了しました。パネルを起動するには、ターミナルで yukicpl を実行してください。"
     [ $lang = "C.UTF-8" ] && echo "Install is Successfully Done, you can execute yukicpl in terminal for run."
