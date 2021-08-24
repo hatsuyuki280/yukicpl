@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 test -a /usr/bin/sudo || sudo()( su -c "$@";)
 
 ###

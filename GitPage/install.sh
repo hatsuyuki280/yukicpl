@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ## 雪次元服务器控制面板安装程序
 UpdatedDate='20210721'
 ###
