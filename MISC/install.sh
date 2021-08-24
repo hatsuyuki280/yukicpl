@@ -16,10 +16,10 @@ echo $@ | grep -q -- "--zh" && lang="zh-CN.UTF-8"
 # main
 ###
 main() {
-    install() && {
-        success()
+    install && {
+        success
     } || {
-        fail()
+        fail
     }
 }
 
