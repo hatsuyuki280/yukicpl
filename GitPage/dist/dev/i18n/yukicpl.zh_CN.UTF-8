@@ -17,8 +17,11 @@ LangConfigureFiles='配置文件'
 LangInvalidArgumentGived='当前输入的参数无效，请尝试配合 --help 选项查看帮助。'
 LangArgumentGive='赋予参数'
 LangOption='选项'
+LangDefault='默认'
 LangRequires='需要'
+LangNotNeed='不需要'
 LangContinueButton='继续'
+LangOkButton='好'
 LangNoButton='不好'
 LangUsingTestMode='将会使用测试模式运行(不会实际执行任何命令)'
 
@@ -45,9 +48,46 @@ LangReadBeforeInitMsg='<!>免责声明<!>
 > 设计的目标系统是 Debian 10，\n  更新版本/更旧版本的兼容性不做保证。
 > 并未测试过对于 注入型攻击 的保护，\n  因此请不要传入不安全的参数！
 > 对于以上所述/未尽之风险，咱不负任何责任。'
-LangFunctionListLNMP='LNMP及管理工具'
+LangFunctionListLNMP='扩展的LNMP及管理工具'
 LangFunctionListOneKeyWWW='常用网站程序的一键部署工具'
 LangFunctionListCloudflared='Cloudflared相关的管理工具'
 LangFunctionListSoftEtherVPN='SoftEther服务器及管理工具'
 LangFunctionListSystemManagermentTools='常用的系统管理工具等'
-LangFunctionSelectScreenMsg='请使用方向键和空格键选择你需要的功能，详细说明请阅读网页指南。按回车键提交选择'
+LangFunctionListNginxStreamingModule='Nginx直播模块'
+LangFunctionListMonaStreamingModule='Mona直播服务器'
+LangFunctionSelectScreenMsg='请使用方向键和空格键选择你需要的功能，
+详细说明请阅读网页指南。
+按回车键提交选择。'
+LangDatabaseListMariaDB='MariaDB(MySQL)的服务端与客户端'
+LangDatabaseListMongoDB='MongoDB的服务端与客户端'
+LangDatabaseListRedis='Redis的服务端'
+LangInitSettingDefaultDataPath='请输入您希望用作默认存储位置的路径：
+这个地址将用于存放站点程序 SSL证书等。
+今后在创建网站时，将使用这个路径作为默认目录。
+不存在的目录将会自动创建，并由本面板自动管理、
+不建议手动修改该目录下的内容。留空使用默认值：
+"/yukicpl"'
+LangInitSettingDefaultDomain='请输入您希望作为默认域的域名：
+此域名将会作为站点的默认查照域。
+
+在今后添加网站时如果为输入完全限定的域名，
+将会自动使用这个域名作为补全。
+留空将使用变量"$HOSTNAME"'
+LangSelWorkingModeMsg='在线使用此脚本，这样可以嘛？
+如果您选择“好”：
+将仅在您第一次被使用时下载对应的模块。
+如果您选择“不好”：
+我们将会立刻下载您所选择的功能的全部模块，
+同时也将禁用脚本文件的自动更新。
+虽然不推荐，但可以让今后没有联网计划的设备
+完全脱机的使用此脚本提供的功能。（不推荐）
+
+注意：此脚本的很多功能都依赖互联网，默认有
+使用APT作为包管理工具，断网使用将同时无法
+通过APT安装/更新软件，本软件目前仅支持管理
+通过APT安装的各种工具，离线使用可能需要重写
+此脚本，本软件管理的各种工具可能会需要您通过
+编译等的方式自行安装，这种情况并未进行任何测
+试，因此请务必确保自己有能力解决将会遇到的
+问题。
+详细内容请阅读安装说明。'
