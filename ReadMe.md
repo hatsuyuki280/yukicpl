@@ -2,7 +2,7 @@
 
 ---
 
-* [for English](https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/Readme_en.md)  
+* [for English](https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/readme_en.md)  
 * [日本語説明](https://github.com/hatsuyuki280/yukicpl/blob/master/MISC/readme_ja.md)
 ### 简介
 yukicpl 全称 初雪的服务器管理面板。  
