@@ -17,7 +17,14 @@ ConfFileIn="/etc/yukicpl/yukicpl.conf"
 TraslateFile="/etc/yukicpl/yukicpl.$lang"
 DistChannel="dev"
 
-[ -f "$TraslateFile" ] && { source "$TraslateFile" } || { echo "Translate File Not Found.\nDownloading..."; lang="C.UTF-8"; wget "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang" -O "$TraslateFile"; }
+[ -f "$TraslateFile" ] && {
+    source "$TraslateFile"
+  } || {
+    echo -e "Translate File Not Found.\nDownloading...";
+    lang="C.UTF-8";
+    wget "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang"\
+    -O "$TraslateFile";
+}
 
 ###
 # pre-test and set env variables
@@ -28,18 +35,35 @@ export NEWT_COLORS='window=,white;border=black,white;textbox=black,white;button=
 Init()(
     whiptail --title "$LangTitle" --msgbox "$LangInitWelcomeMsg" 10 40 --ok-button "$LangContinueButton"
     whiptail --title "$LangTitle" --yesno "$LangReadBeforeInitMsg" 25 55 --scrolltext --no-button "$LangNoButton" --yes-button "$LangContinueButton" || { echo "$LangPleaseAcceptItBeforeUse" ; exit 1; }
-    functionlist="lnmp $LangFunctionListLNMP 0\
+    functionList="lnmp $LangFunctionListLNMP 0\
                   ok-www $LangFunctionListOneKeyWWW 0\
                   cfd $LangFunctionListCloudflared 0\
                   sevpn $LangFunctionListSoftEtherVPN 0\
                   sm-tools $LangFunctionListSystemManagermentTools 0\
                 "
-    selectedFunction="$(whiptail --title "$LangTitle" --checklist "$LangFunctionSelectScreenMsg" 25 50 17 $functionlist 3>&1 1>&2 2>&3)"
+    selectedFunctionList="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --checklist "$LangFunctionSelectScreenMsg" 25 50 17 $functionList 3>&1 1>&2 2>&3)"
+    setedDefaultDataPath="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --inputbox "$LangInitSettingDefaultDataPath" 15 57 3>&1 1>&2 2>&3)"
+    [ -z "$setedDefaultDataPath" ] && setedDefaultDataPath="/yuki"
+    setedDefaultSeachDomain="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --inputbox "$LangInitSettingDefaultDomain" 15 57 3>&1 1>&2 2>&3)"
+    [ -z "$setedDefaultSeachDomain" ] && setedDefaultSeachDomain="$HOSTNAME"
+    livefunc="no $LangNotNeed*$LangDefault* 1\
+              > nginx $LangFunctionListNginxStreamingModule 0\
+              > mona $LangFunctionListMonaStreamingModule 0\
+              "
+    selectForStreamingFunction="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --radiolist "您需要使用直播推流服务嘛？" 25 50 17 $livefunc 3>&1 1>&2 2>&3)"
+    databaseList="MariaDB $LangDatabaseListMariaDB 0\
+                  MongoDB $LangDatabaseListMongoDB 0\
+                  Redis $LangDatabaseListRedis 0\
+                  PostgreSQL $LangDatabaseListRedis 0\
+                "
+    selectedDatabaseList="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --checklist "$LangFunctionSelectScreenMsg" 25 50 17 $databaseList 3>&1 1>&2 2>&3)"
+    OfflineUse="no"
+    whiptail --title "$LangTitle" --yesno "$LangSelWorkingModeMsg" 25 55 --scrolltext --no-button "$LangNoButton" --yes-button "$LangContinueButton" || { echo "$LangPleaseAcceptItBeforeUse" ; exit 1; }
     # 3>&1 1>&2 2>&3
 )
 
 test -e "$ConfFileIn" || {
-    echo "$LangCanNotFound$LangConfigureFiles\n$LangStartToPreConfig"
+    echo -e "$LangCanNotFound$LangConfigureFiles\n$LangStartToPreConfig"
     sleep 2
     Init
 }

@@ -17,7 +17,14 @@ ConfFileIn="/etc/yukicpl/yukicpl.conf"
 TraslateFile="/etc/yukicpl/yukicpl.$lang"
 DistChannel="dev"
 
-[ -f "$TraslateFile" ] && { source "$TraslateFile" } || { echo "Translate File Not Found.\nDownloading..."; lang="C.UTF-8"; wget "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang" -O "$TraslateFile"; }
+[ -f "$TraslateFile" ] && {
+    source "$TraslateFile"
+  } || {
+    echo "Translate File Not Found.\nDownloading...";
+    lang="C.UTF-8";
+    wget "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang"\
+    -O "$TraslateFile";
+}
 
 ###
 # pre-test and set env variables
