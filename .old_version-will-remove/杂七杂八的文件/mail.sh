@@ -9,8 +9,8 @@ mv /etc/postfix/main.cf "/etc/postfix/main.cf.$(date)"
 
 typeset -l DDNS_ADDR    ##设置输入类型为全部小写
 read -e -p "为防止意外发生，请在这里输入MX记录对应的地址，
- 如yuki.yuki233.com 的 MX 解析为 mail.yuki233.com ，则
- 请在这里输入 mail.yuki233.com ，如果有多个解析值，请以 
+ 如yuki.moeyuki.works 的 MX 解析为 mail.moeyuki.works ，则
+ 请在这里输入 mail.moeyuki.works ，如果有多个解析值，请以 
  解析值1, 解析值2, 解析值3 的样子依次输入，注意两个解析值
  之间以一个 英文 “,” 加一个半角空格 “ ” 予以区分。如解析值
  也以CNAME被解析，同样也建议一并将其解析结果按照上述结果一并

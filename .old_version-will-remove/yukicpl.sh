@@ -776,8 +776,8 @@ clean()(
     }
     read -e -p "即便如此也要进行这个操作？默认为No，确定请输入小写yes[yes/NO]"   SL ##询问是否
     echo "$SL" | grep -q -E 'yes' && {   ##满足
-        read -e -p "真的要进行这个操作？真的是不可逆的操作！！！[确定请输入本面板的管理授权密码：yuki233.com]"   SL ##询问是否
-        test "$SL" = "yuki233.com" && {   ##满足
+        read -e -p "真的要进行这个操作？真的是不可逆的操作！！！[确定请输入本面板的管理授权密码：moeyuki.works]"   SL ##询问是否
+        test "$SL" = "moeyuki.works" && {   ##满足
             read -e -p "这将是最后一遍确认，真的确定要执行？确定请输入现在的时间（2位小时数）[24小时制]"   SL ##询问
             time=`date +%H`
             test "$SL" = "$time" && {   ##满足

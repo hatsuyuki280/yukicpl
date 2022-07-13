@@ -3,7 +3,7 @@
 from requests import get, post
 
 
-Source_URL_base = 'https://yukicpl.moeyuki.tech/dist'
+Source_URL_base = 'https://yukicpl.moeyuki.works/dist'
 # get_root_info
 path_response = get(Source_URL_base+'dist.json').json()["contents"]
 

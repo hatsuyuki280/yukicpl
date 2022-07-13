@@ -21,10 +21,10 @@ test "$install" = "fail" || {
 }
 
 ##基础配置
-dn="yuki233.com"
+dn="moeyuki.works"
 port="8080" ##端口
 cqdir="/yuki/bot/coolq-data"    ##酷q的数据文件夹
-PW="yuki233.com"    ##远程管理的时候的密码
+PW="moeyuki.works"    ##远程管理的时候的密码
 QAQ=""  ##机器人QQ号
 name="cq-01" ##容器名称
 dir="/$name"  ##子目录（可选，从 / 开始， / 指的是 $cqdir 指定的目录本身 ）

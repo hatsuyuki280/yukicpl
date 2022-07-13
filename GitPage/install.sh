@@ -34,14 +34,14 @@ install() {
     ###
     # Download main file and grant exec permission
     ###
-    sudo wget -O /usr/local/bin/yukicpl "https://yukicpl.moeyuki.tech/dist/$DistChannel/bin/yukicpl.sh"
+    sudo wget -O /usr/local/bin/yukicpl "https://yukicpl.moeyuki.works/dist/$DistChannel/bin/yukicpl.sh"
     sudo chmod +x /usr/local/bin/yukicpl
 
     ###
     # Creat dir and download translate file
     ###
     sudo mkdir -p /usr/local/lib/yukicpl /usr/local/share/yukicpl /etc/yukicpl
-    sudo wget -O /etc/yukicpl/yukicpl.$lang "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang"
+    sudo wget -O /etc/yukicpl/yukicpl.$lang "https://yukicpl.moeyuki.works/dist/$DistChannel/i18n/yukicpl.$lang"
 
     [ $full -eq 1 ] && {
         [ $lang = "zh_CN.UTF-8" ] && echo "接下来将会调用Yukicpl进行下载，请根据向导的提示完成Yukicpl的初期设置。"

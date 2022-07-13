@@ -22,7 +22,7 @@ DistChannel="dev"
   } || {
     echo "Translate File Not Found.\nDownloading...";
     lang="C.UTF-8";
-    wget "https://yukicpl.moeyuki.tech/dist/$DistChannel/i18n/yukicpl.$lang"\
+    wget "https://yukicpl.moeyuki.works/dist/$DistChannel/i18n/yukicpl.$lang"\
     -O "$TraslateFile";
 }
 
