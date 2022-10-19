@@ -1,108 +1,184 @@
 #!/bin/bash
-test -a /usr/bin/sudo || sudo()( su -c "$@";)
+## main Version: 0.0.1
+
+[ $UID -ne 0 ] && {
+  echo "You are not root, Trying to run with sudo..." 
+  test -a /usr/bin/sudo || sudo()( su -c "$@";)
 
 ###
-# AdvanceSetting
+# AdvanceSettings
+#
+# Path to Config File
+ConfigFile="/etc/yukicpl.conf"
+# path to Extension Directory
+ExtensionDir="/opt/yukicpl/extensions"
+
 ###
-ExFileIn="/usr/local/lib/yukicpl/"
-lang=$LANG
-echo $@ | grep -q -- "--ja_JP.UTF-8" && lang="ja_JP.UTF-8"
-echo $@ | grep -q -- "--C.UTF-8" && lang="C.UTF-8"
-echo $@ | grep -q -- "--zh_CN.UTF-8" && lang="zh_CN.UTF-8"
-echo $@ | grep -q -- "--ja" && lang="ja_JP.UTF-8"
-echo $@ | grep -q -- "--en" && lang="C.UTF-8"
-echo $@ | grep -q -- "--zh" && lang="zh_CN.UTF-8"
+# Pre-check And Prepare required functions
+###
+# check if gettext is installed
+[ -f /usr/bin/gettext ] && {  ## 
+  alias T_='gettext "yukicpl"'
+  #[ DebugMode -eq 1 ] && echo "$(T_ 'gettext is installed, will use it to translate the text')" >&2
+} || {
+  #[ DebugMode -eq 1 ] && echo "gettext is not installed now. Using Default Language." >&2
+  alias T_='echo'
+}
+[ -f /etc/yukicpl.conf ] && source "$ConfigFile" || echo "$(T_ 'Config file not found, will run init now.')" >&2 ; initMode=1
+[ -z "$(ls -A "$ExtensionDir")" ] && echo "$(T_ 'Extension directory is empty, Please select an extension later.')" && extensionSelectMode=1
+#[ -f /usr/bin/whiptail ] || echo "$(T_ 'whiptail is not installed, will run in text mode.')"; textMode=1
 
-ConfFileIn="/etc/yukicpl/yukicpl.conf"
-TraslateFile="/etc/yukicpl/yukicpl.$lang"
-DistChannel="dev"
 
-[ -f "$TraslateFile" ] && {
-    source "$TraslateFile"
+#[ $DebugMode -eq 1 ] echo "$(T_ 'Ready to use, Press any key to continue...')" && read -n1
+
+
+###
+# Define Internal Functions
+###
+# PrintArgumentHelp()(
+#   echo "Usage: yukicpl [OPTION]..."
+#   echo "  -h, --help      Print this help message."
+#   echo "  -t, --text      Run in text mode."
+#   echo "      --language  Set language."
+# )
+
+TitleBuilder(){
+  textLength=${#1}
+  windowWidth=$(tput cols)
+  [ $windowWidth -gt 72 ] && windowWidth=72
+  printf "%*s\n" $(( (windowWidth-2 + textLength) / 2)) "-$1-"
+}
+
+SwitchToSelectMode()(
+  PS3="$(T_ 'your choice:')"
+  select option in $@
+  do
+    [[ $REPLY =~ ^[0-9]+$ ]] && {
+      [ $REPLY -le ${#@} ] && {
+        # [ $DebugMode -eq 1 ] && echo "$(T_ 'Selected option: ')$option"
+        echo $REPLY
+        break
+      } || echo "$(T_ 'more than iterm, please try again.')" >&2 && continue
+    } || echo "$(T_ 'not a number, please try again.')" >&2 && continue
+  done
+)
+
+MutliSelectMode()(
+  PS3="$(T_ 'your choice:')"
+  select option in $@
+  do
+    [ -z "$REPLY" ] && echo "$(T_ 'Invalid option, please try again.')" >&2 && continue
+    [[ $REPLY =~ ^[0-9]+$ ]] && [ $REPLY -le ${#option[@]} ] && {
+      # [ $DebugMode -eq 1 ] && echo "$(T_ 'Selected option: ')$option"
+      echo $REPLY
+      break
+    } || echo "$(T_ 'Invalid option, please try again.')" >&2 && continue
+  done
+)
+
+###
+# Init Menu
+###
+_init()(
+  clear
+  TitleBuilder "$(T_ 'Welcome to yukicpl!')"
+  echo "$(T_ 'We will help you to configure yukicpl now.')"
+  echo "$(T_ 'At first, we need to know your prefered language.')"
+  echo "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'English') $(T_ 'Chinese') $(T_ 'Japanese')")"
+  case $choice in
+    1) LANG="en_US.UTF-8";;
+    2) LANG="zh_CN.UTF-8";;
+    3) LANG="ja_JP.UTF-8";;
+  esac
+  unset choice
+  echo "LANG=$LANG" >> "$ConfigFile"
+  [ -f /usr/share/locale/$LANG/LC_MESSAGES/yukicpl.mo ] && {
+    echo "$(T_ 'Try to using the selected language now.')"
   } || {
-    echo -e "Translate File Not Found.\nDownloading...";
-    lang="C.UTF-8";
-    wget "https://yukicpl.moeyuki.works/dist/$DistChannel/i18n/yukicpl.$lang"\
-    -O "$TraslateFile";
-}
-
-###
-# pre-test and set env variables
-###
-export NEWT_COLORS='window=,white;border=black,white;textbox=black,white;button=white,cyan;title=black,white;shadow=,gray'
-
-
-Init()(
-    whiptail --title "$LangTitle" --msgbox "$LangInitWelcomeMsg" 10 40 --ok-button "$LangContinueButton"
-    whiptail --title "$LangTitle" --yesno "$LangReadBeforeInitMsg" 25 55 --scrolltext --no-button "$LangNoButton" --yes-button "$LangContinueButton" || { echo "$LangPleaseAcceptItBeforeUse" ; exit 1; }
-    functionList="lnmp $LangFunctionListLNMP 0\
-                  ok-www $LangFunctionListOneKeyWWW 0\
-                  cfd $LangFunctionListCloudflared 0\
-                  sevpn $LangFunctionListSoftEtherVPN 0\
-                  sm-tools $LangFunctionListSystemManagermentTools 0\
-                "
-    selectedFunctionList="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --checklist "$LangFunctionSelectScreenMsg" 25 50 17 $functionList 3>&1 1>&2 2>&3)"
-    setedDefaultDataPath="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --inputbox "$LangInitSettingDefaultDataPath" 15 57 3>&1 1>&2 2>&3)"
-    [ -z "$setedDefaultDataPath" ] && setedDefaultDataPath="/yuki"
-    setedDefaultSeachDomain="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --inputbox "$LangInitSettingDefaultDomain" 15 57 3>&1 1>&2 2>&3)"
-    [ -z "$setedDefaultSeachDomain" ] && setedDefaultSeachDomain="$HOSTNAME"
-    livefunc="no $LangNotNeed*$LangDefault* 1\
-              > nginx $LangFunctionListNginxStreamingModule 0\
-              > mona $LangFunctionListMonaStreamingModule 0\
-              "
-    selectForStreamingFunction="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --radiolist "您需要使用直播推流服务嘛？" 25 50 17 $livefunc 3>&1 1>&2 2>&3)"
-    databaseList="MariaDB $LangDatabaseListMariaDB 0\
-                  MongoDB $LangDatabaseListMongoDB 0\
-                  Redis $LangDatabaseListRedis 0\
-                  PostgreSQL $LangDatabaseListRedis 0\
-                "
-    selectedDatabaseList="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --checklist "$LangFunctionSelectScreenMsg" 25 50 17 $databaseList 3>&1 1>&2 2>&3)"
-    OfflineUse="no"
-    whiptail --title "$LangTitle" --yesno "$LangSelWorkingModeMsg" 25 55 --scrolltext --no-button "$LangNoButton" --yes-button "$LangContinueButton" || { echo "$LangPleaseAcceptItBeforeUse" ; exit 1; }
-    # 3>&1 1>&2 2>&3
+    echo "$(T_ 'The selected Language is not installed, Try to install it now?')"
+    choice="$(SwitchToSelectMode "$(T_ 'Yes') $(T_ 'No')")"
+    case $choice in
+      1) 
+        echo "$(T_ 'Try to get translation file from repository now.')"
+        wget -q -O /usr/share/locale/$LANG/LC_MESSAGES/yukicpl.mo https://yukicpl.moeyuki.works/dist/i18n/$LANG/yukicpl.mo
+        [ $? -eq 0 ] && {
+          echo "$(T_ 'Translation file downloaded successfully.')"
+        } || {
+          echo "$(T_ 'Failed to download translation file, please try again later.')"
+          exit 1
+        }
+        [ $? -eq 0 ] && echo "$(T_ 'Translation file downloaded successfully.')" || echo "$(T_ 'Failed to download translation file.')"
+        apt-get install language-pack-$LANG
+        ;;
+      2) echo "$(T_ 'Will use default language now.')" ;;
+    esac
+  }
+  echo "$(T_ 'Looks good, Next we need to know what features you want to use.')"
+  
 )
 
-test -e "$ConfFileIn" || {
-    echo -e "$LangCanNotFound$LangConfigureFiles\n$LangStartToPreConfig"
-    sleep 2
-    Init
-}
-source "$ConfFileIn"
+[ $InitMode -eq 1 ] && _init
 
 
+###
+# Main Menu
+###
 main()(
-echo 'Writing now'
+  echo ""
 )
 
-PrintArgumentHelp()(
-    echo "$LangArgumentHelpTitle"
-    echo "$LangArgumentHelpDescription"
-)
 
 ###
 # 传入参数处理
 ###
-while getopts ":ht" opt; do
+while getopts "ht-:" opt; do
   case $opt in
     h)
-      PrintArgumentHelp && quit
+      PrintArgumentHelp
       exit 0
       ;;
     t)
-      TestMode=1
-      echo "$LangUsingTestMode"
-      sleep 2
-    ;;
-    :)
-      echo "$LangOption -$OPTARG $LangRequires$LangArgumentGive" 
-      exit 1
+      textMode=1
       ;;
-    ?)
-      echo "$LangInvalidArgumentGived"
+    -)
+      case $OPTARG in
+        help)
+          PrintArgumentHelp
+          exit 0
+          ;;
+        text)
+          textMode=1
+          ;;
+        language)
+          case $2 in
+            zh_CN)
+              lang="zh_CN"
+              ;;
+            en_US)
+              lang="en_US"
+              ;;
+            ja_JP)
+              lang="ja_JP"
+              ;;
+            *)
+              echo "Invalid Language"
+              exit 1
+              ;;
+          esac
+        *)
+          echo "Invalid option: --$OPTARG" >&2
+          exit 1
+          ;;
+      esac
+      ;;
+    \?)
+      echo "Invalid option: -$opt" >&2
+      exit 1
       ;;
   esac
 done
-echo $@ | grep -q -- "--full-install" && full=1
+
 
 ###
 # Exec Main Method
