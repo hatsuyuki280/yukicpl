@@ -6,13 +6,12 @@
   echo "You are not root, Trying to run with sudo..." 
   test -a /usr/bin/sudo && {
     sudo -i
-  }
-  || sudo()( su -c "$@";)
+  } || sudo()( su -c "$@";)
 
 }
 
 install(){
-  [ "$(cat /etc/os-release | grep "ID_LIKE" | cut -d "=" -f 2)" = "debian" ] && {
+  [ "$( grep "ID_LIKE" /etc/os-release | cut -d "=" -f 2)" = "debian" ] && {
     apt update && sudo apt -y full-upgrade
     apt install -y kexec-tools
     mv /etc/systemd/system/kexec.service /etc/systemd/system/kexec.service.bak
