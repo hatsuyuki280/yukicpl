@@ -1,5 +1,6 @@
 # yukicpl自述文件 -yukicpl Readme-
-
+本自述文件翻译自日文版，并随着开发进程记录主程序和或各配置文件中的补充说明。
+对该文件的正式的重新整理将会在未来进行。
 ---
 ### 簡単な紹介
 yukicpl是 @hatsuyuki280 开发的 Linux 系服务器管理面板。  
@@ -11,7 +12,7 @@ yukicpl是 @hatsuyuki280 开发的 Linux 系服务器管理面板。
 目前，我主要在 Debian >= 9 / Ubuntu >= 18.04 作为目标平台进行开发。  
 由于服务管理使用systemd，因此不支持 Windows 子系统 Linux（WSL）。  
 
-**Important Request**
+**重要提示**
 原本这个面板是为我自己开发的，从一开始就没有考虑和其他管理面板的兼容性，所以即使是在目标平台上不能保证它可以和所有环境下的所有软件共存。  
 此外，由于尚未在业务用途等管理权限复杂的环境中进行验证，因此在这样的环境中使用时无法保证安全。  
 无论是否可以执行，都存在破坏现有文件、系统等的风险。  
@@ -141,3 +142,27 @@ sudo su -c "bash <(wget -qO- https://yukicpl.moeyuki.works/dist/etc/misc/uninsta
 “N”以外的任何输入都默认为同意。 之后，使用 wget 命令自动访问问卷计数器并发送。
 除了调查内容和系统分发之外，我们不会收集或发送用户信息。  
 （发送前会显示发送内容和要执行的命令）。  
+
+### 更多
+如果您想了解更多关于此控制面板的信息，请访问 [yukicpl.moeyuki.works](https://yukicpl.moeyuki.works)
+#### 关于默认设置等
+你可以直接编辑主程序中的各关键变量，但通常的做法是在 /etc/yukicpl/config.conf 中编辑。
+并请注意，如果一个变量同时被定义于主程序和配置文件中，配置文件中的变量将覆盖主程序中的变量。
+此外，你也可以通过命令行参数 -o 或 --option 来覆盖配置文件中的变量。
+当配置文件和命令行参数中同时存在相同的变量时，命令行参数中的变量将覆盖配置文件中的变量。
+默认情况下通过命令行给定的参数将只对单次运行生效，除非你在命令行中指定 -c update-config 选项或通过在主程序中执行 update_config 函数来更新配置文件。
+
+关于更详细的信息，请参阅 [yukicpl.moeyuki.works](https://yukicpl.moeyuki.works) 中的文档。
+
+###
+# Default Settings
+# You can also change these settings in config file.
+# or just give them as arguments to the script.
+# You can find the config file at path: $ConfigFile.
+# * This value is defined in the first line of this script.
+# * Usually it's /etc/yukicpl/config.conf, but you can change it (Not recommended).
+# for all usage, see the help message.
+# if multiple values are given, at config file, the last one will be used.
+# if it at command line, the first one will be used.
+# if it at both, the one at command line will be used.
+###
