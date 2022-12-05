@@ -1,0 +1,23 @@
+//This file will show you about yukicpl directly usage. Also include some 3rd party software's directly usage.
+
+/etc : typically, configuration files will be stored here
+/etc/yukicpl : globle config file will fillin here
+/etc/yukicpl/config.conf : main config file
+/etc/yukicpl/extensions/extensions.conf : enable/disable extension list and globle config of that.
+/etc/yukicpl/extensions/${extension_name} : use by extension. Maybe contain some configuration files.
+
+/usr/local/bin/yukicpl : main program
+
+/usr/share/yukicpl : share data
+/usr/share/locale/${LANG}/LC_MESSAGES/yukicpl.mo : translation file, ${LANG} is your locale code.
+
+/yukicpl : user data and www root
+/yukicpl/site : www root
+/yukicpl/ssl : ssl certificate and keys
+/yukicpl/opt : 3rd party software of web backend
+/yukicpl/log : log file of yukicpl, also symbolic linked to /var/log/yukicpl
+
+/opt/yukicpl : optional data, 3rd party software or other.
+/opt/yukicpl/extensions/${extension_name} : extension main file.
+
+/var/log/yukicpl : log file of yukicpl, also symbolic linked to /yukicpl/log

@@ -1,0 +1,44 @@
+//temporary define, may modify later
+
+// System Level Error Handler
+0 => "Success",
+1 => "Invalid Input",
+2 => "Worn system or architecture",
+3 => "System is not response as expected",
+4 => "Default package manager communication error",
+5 => "Default package manager error",
+6 => "Can't resolve requipment",
+7 => "Required command not found",
+19 => "reserved system error",
+
+// Software Level Error Handler
+20 => "Success",
+21 => "Invalid Input",
+22 => "Config file not found",
+23 => "Config file Invalid",
+24 => "Unexpected value is provided",
+39 => "reserved software error",
+
+// User Level Error Handler
+40 => "Success",
+41 => "Invalid Input",
+42 => "corrent user have no permission to perform this action",
+43 => "Password is not correct",
+44 => "Password is required",
+59 => "reserved user error",
+
+// Network Level Error Handler
+60 => "Success",
+61 => "Require cached",
+62 => "Can't resolve hostname",
+63 => "Can't download plugin from repository",
+64 => "Can't load data from repository",
+65 => "Can't parse downloaded data",
+66 => "Can't get globle IP address automatically",
+67 => "Can't operate firewall or routing table",
+68 => "Can't communication with corrent config",
+89 => "reserved network error",
+
+// reserved error handler
+255 => "reserved Unexpected error"
+);

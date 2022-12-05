@@ -5,7 +5,7 @@
 # Global Variables
 ###
 # shellcheck disable=SC2015 ## Disable the warning of [ $var ] && echo "true" || echo "false"
-ConfigFile="/etc/yukicpl.conf"
+ConfigFile="/etc/yukicpl/config.conf"
 
 [ $UID -ne 0 ] && {
   echo "You are not root, Trying to run with sudo..." 
@@ -20,7 +20,7 @@ ConfigFile="/etc/yukicpl.conf"
 # or just give them as arguments to the script.
 # You can find the config file at path: $ConfigFile.
 # * This value is defined in the first line of this script.
-# * Usually it's /etc/yukicpl.conf, but you can change it (Not recommended).
+# * Usually it's /etc/yukicpl/config.conf, but you can change it (Not recommended).
 # for all usage, see the help message.
 # if multiple values are given, at config file, the last one will be used.
 # if it at command line, the first one will be used.
@@ -41,7 +41,7 @@ ExtensionDir="/opt/yukicpl/extensions"
   alias T_='echo'
 }
 # shellcheck source=/dev/null
-[ -f /etc/yukicpl.conf ] && source "$ConfigFile" || printf '%s\n' "$(T_ 'Config file not found, will run init now.')" >&2 ; initMode=1
+[ -f "$ConfigFile" ] && source "$ConfigFile" || printf '%s\n' "$(T_ 'Config file not found, will run init now.')" >&2 ; initMode=1
 [ -z "$(ls -A \"$ExtensionDir/enabled\")" ] && printf '%s\n' "$(T_ 'No extension enabled, will run in basic mode.')"; basicMode=1
 
 #[ $DebugMode -eq 1 ] printf '%s\n' "$(T_ 'Ready to use, Press any key to continue...')" && read -n1
@@ -60,7 +60,7 @@ ExtensionDir="/opt/yukicpl/extensions"
 GetExtensionList(){
   declare -A extensions
   for ext in "$ExtensionDir"/enabled/*; do
-    grep -m 1 "SupportedDist" "$ExtensionDir/enabled/$ext" | grep -q "$(grep "ID_LIKE" /etc/os-release | cut -d "=" -f 2)" && {
+    grep -m 1 "SupportedDist" "$ExtensionDir/enabled/$ext/meta.json" | grep -q "$(grep "ID_LIKE" /etc/os-release | cut -d "=" -f 2)" && {
       extensions["$ext"]=$(grep -m 1 "ShortDescription" "$ExtensionDir/enabled/$ext" | cut -d "=" -f 2)
     } || {
       printf '%s\n' "$(T_ "Extension $ext is not supported on this system, will skip it.")"
@@ -71,7 +71,7 @@ GetExtensionList(){
 
 GetExtensionInfo(){
   declare -A ExtensionInfo
-  ExtensionInfo["Name"]="$(grep -m 1 "Name:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
+  ExtensionInfo["Name"]="$(grep -m 1 "Name:" "$ExtensionDir/enabled/$1/" | cut -d ":" -f 2)"
   ExtensionInfo["Version"]="$(grep -m 1 "Version:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
   ExtensionInfo["Description"]="$(grep -m 1 "Description:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
   ExtensionInfo["Author"]="$(grep -m 1 "Author:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
