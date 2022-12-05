@@ -1,0 +1,27 @@
+{
+    "name": "SampleExtension",
+    "Version": "0.0.1",
+    "Description": "This is a sample extention for FastRefer.",
+    "ShortDescription": "Sample Extention",
+    "Author": "SomeOne",
+    "License": "GPL-3.0",
+    "SupportedDist": ["debian","someotherdist"],
+    "SupportedArch": ["x86_64","i386"],
+    "EnvVarType": "EnvVar", 
+    "RequiredEnvVars": ["VERSION","CONFIG_FILE","LOG_FILE"],
+    "Functions": [
+        {
+            "func":"Show Version",
+            "call":"ShowVersion",
+            "RequiredArgs":[]
+        },{
+            "func":"Show Config",
+            "call":"ShowConfig",
+            "RequiredArgs":[]
+        },{
+            "func":"Log Something",
+            "call":"LogSomething",
+            "RequiredArgs":["Message"]
+        }
+    ]
+}
