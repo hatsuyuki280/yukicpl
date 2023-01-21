@@ -1,0 +1,31 @@
+{
+    "name": "Name of the extension",
+    "Version": "Version Number,looks like major.minor.build[.revision].",
+    "Description": "Human readable description of the extension.",
+    "ShortDescription": "simple Description for this extension.",
+    "Author": "Author's Name",
+    "License": "License Name Just Like GPL and MIT",
+    "SupportedDist": ["debian","ubuntu"], //fill this with the supported distros, this value will check with the distro id_like in /etc/os-release
+    "SupportedArch": ["x86_64","i386"], //optional
+    "EnvVarType": "env, json, or arglist", //env is the default value, that means the extension will use environment variables to pass the data to the script`
+    "RequiredEnvVars": ["Name of Variable"],
+    "Class": "Other",
+    "Functions": [ //functions name will be used in the script as display name
+        {
+            "func":"Show Version", //display name
+            "call":"ShowVersion", //subroutine name for excuting the function, will using plugin_name + call as the function name
+            "RequiredArgs":[] //required arguments for the function, this will be question to the user to input, if this is empty, the function will be executed without any arguments
+            // some preserved arguments will auto filled by the system.
+            // list of preserved arguments:
+            // will be filled later
+        },{
+            "func":"Show Config",
+            "call":"ShowConfig",
+            "RequiredArgs":[]
+        },{
+            "func":"Log Something",
+            "call":"LogSomething",
+            "RequiredArgs":["Message"]
+        }
+    ]
+}
