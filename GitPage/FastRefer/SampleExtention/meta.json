@@ -9,6 +9,8 @@
     "SupportedArch": ["x86_64","i386"],
     "EnvVarType": "EnvVar", 
     "RequiredEnvVars": ["VERSION","CONFIG_FILE","LOG_FILE"],
+    "Dependencies": ["bash","echo","cat"],
+    "Class": "Other",
     "Functions": [
         {
             "func":"Show Version",
