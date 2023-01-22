@@ -7,7 +7,7 @@
     "License": "GPL-3.0",
     "SupportedDist": ["debian","someotherdist"],
     "SupportedArch": ["x86_64","i386"],
-    "EnvVarType": "EnvVar", 
+    "EnvVarType": "Env", 
     "RequiredEnvVars": ["VERSION","CONFIG_FILE","LOG_FILE"],
     "Dependencies": ["bash","echo","cat"],
     "Class": "Other",
