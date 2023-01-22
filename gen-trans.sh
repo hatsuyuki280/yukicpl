@@ -14,7 +14,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # prepare arguments
-while getopts "d:t" opt; do
+while getopts "d:" opt; do
   case $opt in
     d)
       cd "$OPTARG" || {
@@ -22,10 +22,9 @@ while getopts "d:t" opt; do
         exit 1
       }
       ;;
-    t)
-      alias command=type
-      echo "$LangUsingTestMode"
-    ;;
+    *)
+      echo "Usage: $0 [-d <directory>] [-t]"
+      exit 1
   esac
 done
 
@@ -35,7 +34,7 @@ command apt update && apt install -y gettext
 # generate translation file
 if [ $"pwd" = "/home/runner/work/yukicpl" ]; then
   echo "Generating translation file..."
-  xgettext -o yukicpl.pot -L Shell -kL_ --from-code=UTF-8 --package-name=yukicpl --package-version=$"egrep -om1 '([0-9]\.*){3}' yukicpl.sh" yukicpl.sh
+  xgettext -o yukicpl.pot -L Shell -kL_ --from-code=UTF-8 --package-name=yukicpl --package-version="$(grep -Eom1 '([0-9]\.*){3}' yukicpl.sh)" yukicpl.sh
   msgmerge -U zh_CN.po yukicpl.pot
   msgfmt -o zh_CN.mo zh_CN.po
   echo "Done."
