@@ -1,142 +1,208 @@
 #!/bin/bash
 ## main Version: 0.0.1
-
-###
-# Global Variables
-###
-# shellcheck disable=SC2015 ## Disable the warning of [ $var ] && echo "true" || echo "false"
-ConfigFile="/etc/yukicpl/config.conf"
-
+# shellcheck source=/dev/null ## Disable the warning of missing source
+# shellcheck disable=SC2015 ## Disable the warning of a && b || c
+# shellcheck disable=SC2016 ## Disable the warning of variable in single quote
 [ $UID -ne 0 ] && {
-  echo "You are not root, Trying to run with sudo..." 
-  test -a /usr/bin/sudo || sudo()( su -c "$@";)
+  echo "You are not root, Trying to run with sudo..."
+  test -a /usr/bin/sudo || sudo() (su -c "$@")
   sudo "$0" "$@"
   exit $?
 }
 
 ###
-# Default Settings
-# You can also change these settings in config file.
-# or just give them as arguments to the script.
-# You can find the config file at path: $ConfigFile.
-# * This value is defined in the first line of this script.
-# * Usually it's /etc/yukicpl/config.conf, but you can change it (Not recommended).
-# for all usage, see the help message.
-# if multiple values are given, at config file, the last one will be used.
-# if it at command line, the first one will be used.
-# if it at both, the one at command line will be used.
+# Global Variables
 ###
+declare -A YUKICPL_ENV
+YUKICPL_ENV[ConfigFile]="/etc/yukicpl/config.conf"
+YUKICPL_ENV[ConfigDir]="$(dirname "${YUKICPL_ENV[ConfigFile]}")"
+_os_id="$(grep "^ID_LIKE" /etc/os-release | cut -d "=" -f 2)"
+[ -z "$_os_id" ] && _os_id="$(grep "^ID" /etc/os-release | cut -d "=" -f 2)"
+
+
 # path to Extension Directory
 ExtensionDir="/opt/yukicpl/extensions"
+
+###
+# 传入参数处理
+###
+while getopts "hto:c:D:" opt; do
+  case $opt in
+  h)
+    echo "Usage: $0 [-ht] [-o option1,option2...] [-c configfile] [-D [logpath]]" >&2
+    echo "  -h  Show this help message and exit." >&2
+    echo "  -t  Run in text mode." >&2
+    echo "  -o  Set options. Available options:" >&2
+    echo "      debug: Enable debug mode." >&2
+    echo "      basic: Run in basic mode." >&2
+    echo "  -c  Set config file path." >&2
+    echo "  -D  Enable debug mode and set log file path." >&2
+    echo "      If no log file path is set, will use /tmp/yukicpl.log" >&2
+    echo "      If the log file path is a directory, will use <path>/yukicpl.log" >&2
+    echo "      If the log file path is a file, will use it directly." >&2
+    echo -e "\n\n\nfor more information, please visit: https://yukicpl.moeyuki.works" >&2
+    exit 0
+    ;;
+  t)
+    # textMode=1
+    true
+    ;;
+  c)
+    ConfigFile="$OPTARG"
+    ;;
+  o)
+    IFS=',' read -r -a options <<<"$OPTARG"
+    for i in "${options[@]}"; do
+      case $i in
+      debug) DebugMode=1 ;;
+      basic) basicMode=1 ;;
+      *)
+        printf '%s\n' "$(T_ 'Unknown option: ')$i" | tee -a "$Log"
+        exit 1
+        ;;
+      esac
+    done
+    ;;
+  D)
+    DebugMode=1
+    [ -z "$OPTARG" ] && {
+      Log="/tmp/yukicpl.log"
+    } || {
+      [ -d "$OPTARG" ] && {
+        Log="$OPTARG/yukicpl.log"
+      } || {
+        [ -f "$OPTARG" ] && {
+          Log="$OPTARG"
+        } || {
+          Log="/tmp/yukicpl.log"
+        }
+      }
+    }
+    ;;
+  \?)
+    echo "Invalid option: -$opt" >&2
+    exit 1
+    ;;
+  esac
+done
 
 ###
 # Pre-check And Prepare required functions
 ###
 # check if gettext is installed
-[ -f /usr/bin/gettext ] && {  ## 
+[ -f /usr/bin/gettext ] && { ##
   alias T_='gettext "yukicpl"'
   #[ DebugMode -eq 1 ] && printf '%s\n' "$(T_ 'gettext is installed, will use it to translate the text')" >&2
-} || {
+  } || {
   #[ DebugMode -eq 1 ] && echo "gettext is not installed now. Using Default Language." >&2
   alias T_='echo'
 }
-# shellcheck source=/dev/null
-[ -f "$ConfigFile" ] && source "$ConfigFile" || printf '%s\n' "$(T_ 'Config file not found, will run init now.')" >&2 ; initMode=1
-[ -z "$(ls -A \"$ExtensionDir/enabled\")" ] && printf '%s\n' "$(T_ 'No extension enabled, will run in basic mode.')"; basicMode=1
 
-#[ $DebugMode -eq 1 ] printf '%s\n' "$(T_ 'Ready to use, Press any key to continue...')" && read -n1
+[ -f "${YUKICPL_ENV[ConfigFile]}" ] && source "${YUKICPL_ENV[ConfigFile]}" || printf '%s\n' "$(T_ 'Config file not found, will run init now.')" >&2
+initMode=1
+[ -z "$(ls -A \"$ExtensionDir/enabled\")" ] && printf '%s\n' "$(T_ 'No extension enabled, will run in basic mode.')"
+basicMode=1
 
+alias install="/usr/local/lib/yukicpl/installer.sh"
 
-###
-# Define Internal Functions
-###
-# PrintArgumentHelp()(
-#   echo "Usage: yukicpl [OPTION]..."
-#   echo "  -h, --help      Print this help message."
-#   echo "  -t, --text      Run in text mode."
-#   echo "      --language  Set language."
-# )
-
-GetExtensionList(){
+GetExtensionList() {
+  [ "${#@}" -eq 0 ] && lists=(enabled) || lists=("$@")
   declare -A extensions
-  for ext in "$ExtensionDir"/enabled/*; do
-    grep -m 1 "SupportedDist" "$ExtensionDir/enabled/$ext/meta.json" | grep -q "$(grep "ID_LIKE" /etc/os-release | cut -d "=" -f 2)" && {
-      extensions["$ext"]=$(grep -m 1 "ShortDescription" "$ExtensionDir/enabled/$ext" | cut -d "=" -f 2)
-    } || {
-      printf '%s\n' "$(T_ "Extension $ext is not supported on this system, will skip it.")"
+  for list in "${lists[@]}"; do
+    [ -d "$ExtensionDir/$list" ] || {
+      [ "$DebugMode" -eq 1 ] && printf '%s\n' "$(T_ 'Extension directory "$list" not found, will skip this extension.')" >&2
+      continue
     }
+    for extension in "$ExtensionDir/$list"/*; do
+      [ -d "$extension" ] || continue
+      [ -f "$extension/metadata.json" ] || {
+        printf '%s\n' "$(T_ 'Metadata file not found, will skip this extension.')"
+        continue
+      }
+      _supported_dist=("$(jq -r '.SupportedDist[]' "$1")")
+      [[ "${_supported_dist[*]}" =~ [[:Space:]]${_os_id}[[:Space:]] ]] || {
+        printf '%s\n' "$(T_ 'This extension is not supported on your system, will skip this extension.')"
+        continue
+      }
+      _extension_name="$(jq -r '.Name' "$extension/metadata.json")"
+      extensions["$_extension_name"]="$list"
+      unset _supported_dist _extension_name
+    done
   done
   declare -p extensions
 }
 
-GetExtensionInfo(){
-  declare -A ExtensionInfo
-  ExtensionInfo["Name"]="$(grep -m 1 "Name:" "$ExtensionDir/enabled/$1/" | cut -d ":" -f 2)"
-  ExtensionInfo["Version"]="$(grep -m 1 "Version:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
-  ExtensionInfo["Description"]="$(grep -m 1 "Description:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
-  ExtensionInfo["Author"]="$(grep -m 1 "Author:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
-  ExtensionInfo["Functions"]="$(grep -m 1 "Functions:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2 | sed 's/,/ /g')"
-  ExtensionInfo["License"]="$(grep -m 1 "License:" "$ExtensionDir/enabled/$1" | cut -d ":" -f 2)"
-  declare -p ExtensionInfo
+
+ParserExtensionMetadata() {
+
+  [ -f "$1" ] || {
+    printf '%s\n' "$(T_ 'Metadata file not found, will skip this extension.')"
+    return 1
+  }
+  ## get metadata used keys
+  _keys=("$(jq -r 'Keys[]' "$1")")
+
+  ## check if the platform is supported
+  
 }
 
-TitleBuilder(){
+TitleBuilder() {
   textLength=${#1}
   windowWidth=$(tput cols)
   [ "$windowWidth" -gt 72 ] && windowWidth=72
-  printf "%*s\n" $(( (windowWidth-2 + textLength) / 2)) "-$1-"
+  printf "%*s\n" $(((windowWidth - 2 + textLength) / 2)) "-$1-"
 }
 
-SwitchToSelectMode()(
+SwitchToSelectMode() (
   PS3="$(T_ 'your choice:')"
 
-  select option ;
-  do
+  select option; do
     [ "$DebugMode" -eq 1 ] && printf '%s\n' "$(T_ 'Selected option: ')$option"
     echo "$REPLY"
     break
   done
 )
 
-MutliSelectMode()(
+MutliSelectMode() (
   selected_id=()
   num_of_options=${#@}
   options=("$@")
-  while [ "${selected_id[-1]}" -ne "$num_of_options" ] || [ "${#selected_id}" -eq 0 ]; do
-    for i in $(seq 1 "$num_of_options"); do
-      temp=${options["$i"]}
-      options["$i"]="[_]$temp"
+  while [ "${selected_id[-1]}" -le "$(num_of_options)" ] || [ "${#selected_id}" -eq 0 ]; do
+    temp_options=("${options[@]}")
+    for i in $(seq 0 "$((num_of_options-1))"); do
+      temp=${temp_options["$i"]}
+      temp_options["$i"]="[_]$temp"
       for j in "${selected_id[@]}"; do
         [ "$i" -eq "$j" ] && {
-          options["$i"]="[*]$temp"
+          temp_options["$i"]="[*]$temp"
           break
         }
       done
     done
-    selected_id+=("$(SwitchToSelectMode "${options[@]}" "Done")")
+    selected_id+=("$(SwitchToSelectMode "${temp_options[@]}" "Done")")
   done
   unset "selected_id[-1]"
   echo "${selected_id[@]}"
 )
 
-SelectLanguage()(
+SelectLanguage() (
   clear
   TitleBuilder "$(T_ 'Select Language')"
   printf '%s\n' "$(T_ 'We will help you to configure yukicpl now.')"
   printf '%s\n' "$(T_ 'At first, we need to know your prefered language.')"
   printf '%s\n' "$(T_ 'Please make choice below:')"
   usable_languages=()
-  [ "$(grep -m 1 "offline_mode:" "$ConfigFile" | cut -d ":" -f 2)" = "No" ] 
+  [ "$(grep -m 1 "offline_mode:" "${YUKICPL_ENV[ConfigFile]}" | cut -d ":" -f 2)" = "No" ]
   choice="$(SwitchToSelectMode "${usable_languages[@]}")"
   case $choice in
-    1) LANG="en_US.UTF-8";;
-    2) LANG="zh_CN.UTF-8";;
-    3) LANG="ja_JP.UTF-8";;
+  1) LANG="en_US.UTF-8" ;;
+  2) LANG="zh_CN.UTF-8" ;;
+  3) LANG="ja_JP.UTF-8" ;;
   esac
   unset choice
-  [ -f /usr/share/locale/$LANG/LC_MESSAGES/yukicpl.mo ] && {
+  [ -f "/usr/share/locale/$LANG/LC_MESSAGES/yukicpl.mo" ] && {
     printf '%s\n' "$(T_ 'Try to using the selected language now.')"
-    echo "LANG=$LANG" >> "$ConfigFile"
+    echo "LANG=$LANG" >>"${YUKICPL_ENV[ConfigFile]}"
     clear
   } || {
     clear
@@ -144,16 +210,16 @@ SelectLanguage()(
     printf '%s\n' "$(T_ 'The selected Language is not installed, Try to install it now?')"
     choice=$(SwitchToSelectMode "$(T_ 'Yes')" "$(T_ 'No')")
     case $choice in
-      1) 
-        printf '%s\n' "$(T_ 'Try to get translation file from repository now.')"
-        if wget -q -O "/usr/share/locale/$LANG/LC_MESSAGES/yukicpl.mo" "https://yukicpl.moeyuki.works/dist/i18n/$LANG/yukicpl.mo" ; then
-          printf '%s\n' "$(T_ 'Translation file downloaded successfully.')"
-        else
-          printf '%s\n' "$(T_ 'Failed to download translation file, please try again later.')"
-          exit 1
-        fi
-        ;;
-      2) printf '%s\n' "$(T_ 'Will use default language now.')" ;;
+    1)
+      printf '%s\n' "$(T_ 'Try to get translation file from repository now.')"
+      if wget -q -O "/usr/share/locale/$LANG/LC_MESSAGES/yukicpl.mo" "https://yukicpl.moeyuki.works/dist/i18n/$LANG/yukicpl.mo"; then
+        printf '%s\n' "$(T_ 'Translation file downloaded successfully.')"
+      else
+        printf '%s\n' "$(T_ 'Failed to download translation file, please try again later.')"
+        exit 1
+      fi
+      ;;
+    2) printf '%s\n' "$(T_ 'Will use default language now.')" ;;
     esac
     unset choice
   }
@@ -162,91 +228,74 @@ SelectLanguage()(
 ###
 # Init Menu
 ###
-_init()(
+_init() (
   clear
   TitleBuilder "$(T_ 'Welcome to yukicpl!')"
-  printf '%s\n' "$(T_ 'Looks good, Next we need to know what features you want to use.')"
+  printf '%s\n' "$(T_ 'We will help you to configure yukicpl now.')"
+  printf '%s\n' "$(T_ 'We are checking some basic settings now.')"
+  [ -d "${YUKICPL_ENV[ConfigDir]}" ] || {
+    printf '%s\n' "$(T_ 'Config directory not found, will create one now.')"
+    mkdir -p "${YUKICPL_ENV[ConfigDir]}"
+  }
+  [ -f "${YUKICPL_ENV[ConfigFile]}" ] || {
+    printf '%s\n' "$(T_ 'Config file not found, will create one now.')"
+    touch "${YUKICPL_ENV[ConfigFile]}"
+  }
+)
+
+_show_plugins() (
+  clear
+  TitleBuilder "$(T_ 'HTTP & File Sharing')"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'HTTP Server')" "$(T_ 'File Sharing')" "$(T_ 'Back')")"
+  case $choice in
+  1)
+    _http_server
+    ;;
+  2)
+    _file_sharing
+    ;;
+  3) _main_menu ;;
+  esac
+  unset choice
+)
+
+
+_main_menu() (
+  clear
+  TitleBuilder "$(T_ 'Main Menu')"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'HTTP & File Sharing')" "$(T_ 'System Management')" "$(T_ 'Yukicpl Settings')" "$(T_ 'Exit')")"
+  case $choice in
+  1)
+    _show_plugins
+    ;;
+  2)
+    _system_management
+    ;;
+  3)
+    _yukicpl_settings
+    ;;
+  4) exit 0 ;;
+  esac
+  unset choice
 )
 
 ###
 # Main Menu
 ###
-main()(
-  echo ""
+main() (
+  TitleBuilder "$(T_ 'YukiCPL')"
   ## Load Extensions
   [ "$basicMode" -eq 0 ] && {
-    eval "$(GetExtensionList)"
-    [ "$DebugMode" -eq 1 ] && printf '%s\n' "$(T_ 'Extensions loaded.')" | tee -a "$Log" ; declare -p extensions | tee -a "$Log"
+    true
   }
-
-)
-
-
-###
-# 传入参数处理
-###
-while getopts "hto:c:D:-:" opt; do
-  case $opt in
-    h)
-      PrintArgumentHelp
-      exit 0
-      ;;
-    t)
-      # textMode=1
-      true
-      ;;
-    c)
-      ConfigFile="$OPTARG"
-      ;;
-    o)
-      options=("${OPTARG//,/ }")
-      for i in "${options[@]}"; do
-        case $i in
-          debug) DebugMode=1;;
-          basic) basicMode=1;;
-          *) printf '%s\n' "$(T_ 'Unknown option: ')$i" | tee -a "$Log"; exit 1;;
-        esac
-      done
-      ;;
-    D)
-      DebugMode=1
-      [ -z "$OPTARG" ] && {
-        Log="/tmp/yukicpl.log"
-      } || {
-        [ -d "$OPTARG" ] && {
-          Log="$OPTARG/yukicpl.log"
-        } || {
-          [ -f "$OPTARG" ] && {
-            Log="$OPTARG"
-          } || {
-            Log="/tmp/yukicpl.log"
-          }
-        }
-      }
-      ;;
-    -)
-      case $OPTARG in
-        help)
-          PrintArgumentHelp
-          exit 0
-          ;;
-        text)
-          # textMode=1
-          true
-          ;;
-        *)
-          echo "Invalid option: --$OPTARG" >&2
-          exit 1
-          ;;
-      esac
-      ;;
-    \?)
-      echo "Invalid option: -$opt" >&2
-      exit 1
-      ;;
+  _main_menu
+  case $? in
+  0) exit 0 ;;
+  1) _main_menu ;;
   esac
-done
-
+)
 
 ###
 # Exec Main Method
