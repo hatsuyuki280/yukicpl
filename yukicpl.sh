@@ -266,11 +266,11 @@ _sub_menu() (
   TitleBuilder "${_extension_name}"
   call=(ParserExtensionMetadata "${YUKICPL_ENV[ExtensionDir]}/${_extension_name}/meta.json" "_sub_function_call")
   need_input=(ParserExtensionMetadata "${YUKICPL_ENV[ExtensionDir]}/${_extension_name}/meta.json" "_sub_function_args")
-  printf '%s\n' "$(T_ 'Please input value below:')"
+  printf '%s\n' "$(T_ Please input value below:)"
   declare -A args
   for i in ${need_input[_sub_function]}; do
-    printf '%s\n' "$(T_ 'Please input')"
-    read -rp "$(T_ "${i}: )" REPLY
+    printf '%s\n' "$(T_ Please input)"
+    read -rp "${i}:" REPLY
     args[i]=$REPLY
   done
   "${call[${sub_function}]}" "${args[@]}"
@@ -299,6 +299,80 @@ _show_plugins() (
   case $choice in
   1) _main_menu ;;
   *) _extension_name="${extensions[$choice]}" _extension_menu ;;
+  esac
+  unset choice
+)
+
+_system_information() (
+  clear
+  TitleBuilder "$(T_ 'System Information')"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'Back')" "$(T_ 'System Status')" "$(T_ 'System Logs')")"
+  case $choice in
+  1) _system_management ;;
+  2) systemctl status ;;
+  3) journalctl -xe ;;
+  esac
+)
+
+_system_update() (
+  clear
+  TitleBuilder "$(T_ 'System Update')"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'Back')" "$(T_ 'Update System')" "$(T_ 'Update Yukicpl')")"
+  case $choice in
+  1) _system_management ;;
+  2) apt update && apt full-upgrade -y --dry-run && apt full-upgrade -y ;;
+  3) wget -q -O /usr/local/bin/yukicpl https://yukicpl.moeyuki.works/dist/yukicpl && chmod +x /usr/local/bin/yukicpl ;;
+  esac
+)
+
+_service_management() (
+  clear
+  TitleBuilder "$(T_ 'Service Management')"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'Back')" "$(T_ 'list services')" "$(T_ 'edit service')" "$(T_ 'show service')" \
+                               "$(T_ 'enable')" "$(T_ 'disable')" "$(T_ 'start')" "$(T_ 'stop')" "$(T_ 'restart')" "$(T_ 'reload')" "$(T_ 'status')")"
+  case $choice in
+  1) _system_management ;;
+  2) systemctl list-units --type=service ;;
+  3) systemctl edit --full --force "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;
+      systemctl daemon-reload ;;
+  4) systemctl show "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  5) systemctl enable "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  6) systemctl disable "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  7) systemctl start "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  8) systemctl stop "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  9) systemctl restart "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  10) systemctl reload "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  11) systemctl status "$(read -rp "$(T_ 'Please input service name:')" REPLY && echo "$REPLY")" ;;
+  esac
+)
+
+_system_management() (
+  clear
+  TitleBuilder "$(T_ 'System Management')"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'Back')" "$(T_ 'System Information')" "$(T_ 'System Update')" "$(T_ 'Service Management')")"
+  case $choice in
+  1) _main_menu ;;
+  2) _system_information ;;
+  3) _system_update ;;
+  4) _service_management ;;
+  esac
+  unset choice
+)
+
+_yukicpl_settings() (
+  clear
+  TitleBuilder "$(T_ 'Yukicpl Settings')"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'Back')" "$(T_ 'Basic Mode')" "$(T_ 'Advanced Mode')" "$(T_ 'Open Config File')")"
+  case $choice in
+  1) _main_menu ;;
+  2) basicMode=1 ;;
+  3) basicMode=0 ;;
+  4) nano /etc/yukicpl.conf ;;
   esac
   unset choice
 )
