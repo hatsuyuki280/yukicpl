@@ -19,7 +19,6 @@ YUKICPL_ENV[ConfigDir]="$(dirname "${YUKICPL_ENV[ConfigFile]}")"
 _os_id="$(grep "^ID_LIKE" /etc/os-release | cut -d "=" -f 2)"
 [ -z "$_os_id" ] && _os_id="$(grep "^ID" /etc/os-release | cut -d "=" -f 2)"
 
-
 # path to Extension Directory
 ExtensionDir="/opt/yukicpl/extensions"
 
@@ -93,7 +92,7 @@ done
 [ -f /usr/bin/gettext ] && { ##
   alias T_='gettext "yukicpl"'
   #[ DebugMode -eq 1 ] && printf '%s\n' "$(T_ 'gettext is installed, will use it to translate the text')" >&2
-  } || {
+} || {
   #[ DebugMode -eq 1 ] && echo "gettext is not installed now. Using Default Language." >&2
   alias T_='echo'
 }
@@ -132,7 +131,6 @@ GetExtensionList() {
   declare -p extensions
 }
 
-
 ParserExtensionMetadata() {
 
   [ -f "$1" ] || {
@@ -140,10 +138,15 @@ ParserExtensionMetadata() {
     return 1
   }
   ## get metadata used keys
-  _keys=("$(jq -r 'Keys[]' "$1")")
-
-  ## check if the platform is supported
-  
+  case "$2" in
+    _keys) jq -r 'Keys[]' "$1";;
+    ## get sub function name
+    _sub_function_name) jq -r '.Functions[].func' "$1" ;;
+    ## get sub function call
+    _sub_function_call) jq -r '.Functions[].call' "$1" ;;
+    ## get sub function required Args
+    _sub_function_args) jq -r '.Functions[].RequiredArgs' "$1" ;;
+  esac
 }
 
 TitleBuilder() {
@@ -164,25 +167,39 @@ SwitchToSelectMode() (
 )
 
 MutliSelectMode() (
-  selected_id=()
-  num_of_options=${#@}
-  options=("$@")
-  while [ "${selected_id[-1]}" -le "$(num_of_options)" ] || [ "${#selected_id}" -eq 0 ]; do
-    temp_options=("${options[@]}")
-    for i in $(seq 0 "$((num_of_options-1))"); do
-      temp=${temp_options["$i"]}
-      temp_options["$i"]="[_]$temp"
-      for j in "${selected_id[@]}"; do
-        [ "$i" -eq "$j" ] && {
-          temp_options["$i"]="[*]$temp"
-          break
-        }
-      done
+  # customize with your own.
+  options=(${@[*]})
+
+  menu() {
+    echo "Avaliable options:"
+    for i in ${!options[@]}; do
+      printf "%3d%s) %s\n" $((i + 1)) "${choices[i]:- }" "${options[i]}"
     done
-    selected_id+=("$(SwitchToSelectMode "${temp_options[@]}" "Done")")
+    if [[ "$msg" ]]; then echo "$msg"; fi
+  }
+
+  prompt="Check an option (again to uncheck, ENTER when done): "
+  while menu && read -rp "$prompt" num && [[ "$num" ]]; do
+    [[ "$num" != *[![:digit:]]* ]] &&
+      ((num > 0 && num <= ${#options[@]})) ||
+      {
+        msg="Invalid option: $num"
+        continue
+      }
+    ((num--))
+    msg="${options[num]} was ${choices[num]:+un}checked"
+    [[ "${choices[num]}" ]] && choices[num]="" || choices[num]="+"
   done
-  unset "selected_id[-1]"
-  echo "${selected_id[@]}"
+
+  printf "You selected"
+  msg=" nothing"
+  for i in ${!options[@]}; do
+    [[ "${choices[i]}" ]] && {
+      printf " %s" "${options[i]}"
+      msg=""
+    }
+  done
+  echo "$msg"
 )
 
 SelectLanguage() (
@@ -243,23 +260,48 @@ _init() (
   }
 )
 
+_sub_menu() (
+  clear
+  ## load enabled plugins
+  TitleBuilder "${_extension_name}"
+  call=(ParserExtensionMetadata "${YUKICPL_ENV[ExtensionDir]}/${_extension_name}/meta.json" "_sub_function_call")
+  need_input=(ParserExtensionMetadata "${YUKICPL_ENV[ExtensionDir]}/${_extension_name}/meta.json" "_sub_function_args")
+  printf '%s\n' "$(T_ 'Please input value below:')"
+  declare -A args
+  for i in ${need_input[_sub_function]}; do
+    printf '%s\n' "$(T_ 'Please input')"
+    read -rp "$(T_ "${i}: )" REPLY
+    args[i]=$REPLY
+  done
+  "${call[${sub_function}]}" "${args[@]}"
+)
+
+_extension_menu() (
+  clear
+  ## load enabled plugins
+  TitleBuilder "${_extension_name}"
+  subCommand=ParserExtensionMetadata "${YUKICPL_ENV[ExtensionDir]}/${_extension_name}/meta.json" "_sub_function_name"
+  printf '%s\n' "$(T_ 'Please make choice below:')"
+  choice="$(SwitchToSelectMode "$(T_ 'Back')" "${_sub_function_name[@]}")"
+  case $choice in
+  1) _show_plugins ;;
+  *) _extension_name="${_extension_name}" _sub_function="(( ${choice} -1 ))" _sub_menu ;;
+  esac
+)
+
 _show_plugins() (
   clear
+  ## load enabled plugins
+  eval GetExtensionList
   TitleBuilder "$(T_ 'HTTP & File Sharing')"
   printf '%s\n' "$(T_ 'Please make choice below:')"
-  choice="$(SwitchToSelectMode "$(T_ 'HTTP Server')" "$(T_ 'File Sharing')" "$(T_ 'Back')")"
+  choice="$(SwitchToSelectMode "$(T_ 'Back')" "${extensions["$_extension_name"]}" )"
   case $choice in
-  1)
-    _http_server
-    ;;
-  2)
-    _file_sharing
-    ;;
-  3) _main_menu ;;
+  1) _main_menu ;;
+  *) _extension_name="${extensions[$choice]}" _extension_menu ;;
   esac
   unset choice
 )
-
 
 _main_menu() (
   clear
