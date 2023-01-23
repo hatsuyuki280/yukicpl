@@ -4,7 +4,8 @@
 ###
 # init install script
 ###
-test -a /usr/bin/sudo || sudo() (su -c "$@")
+
+[ "$(id -u)" == 0 ] && alias sudo= || test -a /usr/bin/sudo || sudo() (su -c "$@")
 full=0
 [ "${FULL_INSTALL}" == "true" ] && full=1
 DistChannel="dev"
@@ -48,11 +49,11 @@ install() {
 	sudo mkdir -p /usr/local/share/yukicpl /usr/local/lib/yukicpl /yukicpl/ssl /yukicpl/site /yukicpl/opt /yukicpl/log /etc/yukicpl
 	# sudo wget -O "/usr/share/locale/${LANG}/LC_MESSAGES/yukicpl.mo" "https://yukicpl.moeyuki.works/dist/i18n/${LANG}/yukicpl.mo"
 	sudo touch /etc/yukicpl/yukicpl.conf
-	sudo tee "/etc/yukicpl/yukicpl.conf" <<EOF1
+	sudo tee "/etc/yukicpl/yukicpl.conf" > /dev/null <<EOF1
 prefix=/yukicpl
 EOF1
 	sudo touch /usr/local/lib/yukicpl/installer.sh
-	sudo tee "/usr/local/lib/yukicpl/installer.sh" <<EOF2
+	sudo tee "/usr/local/lib/yukicpl/installer.sh" > /dev/null <<EOF2
 #!/bin/bash
 pre_check() {
 	# Check if the user is root
