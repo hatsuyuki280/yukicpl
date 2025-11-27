@@ -292,10 +292,7 @@ SystemManagementMenu() {
                 if whiptail --title "DANGER" --yesno "This will REMOVE nginx, php, mysql and DELETE all data in $DefaultDataPath. Are you ABSOLUTELY SURE?" 15 60 --no-button "NO, STOP" --yes-button "I understand"; then
                      if whiptail --title "Double Check" --yesno "Really? This is irreversible." 10 60 --no-button "Cancel" --yes-button "Do it"; then
                         echo "Cleaning up..."
-                        # In real run, we would exec commands.
-                        # For safety in this refactor, I'll comment out the destructive parts or put them behind a check.
-                        # apt-get purge ...
-                        # rm -rf ...
+                        # TODO: Implement cleanup logic - remove nginx, php, mysql packages and data directory
                         msgbox "Cleanup logic is currently disabled for safety in this version."
                      fi
                 fi
