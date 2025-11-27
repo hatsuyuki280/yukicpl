@@ -270,10 +270,22 @@ SystemManagementMenu() {
                 fi
                 ;;
             lang)
-                dpkg-reconfigure locales
+                if command -v dpkg-reconfigure >/dev/null; then
+                    dpkg-reconfigure locales
+                elif command -v localectl >/dev/null; then
+                    whiptail --title "Change Language" --msgbox "Please use: localectl set-locale LANG=<locale>. Example: localectl set-locale LANG=en_US.UTF-8" 10 60
+                else
+                    whiptail --title "Unsupported" --msgbox "Cannot change system language: neither dpkg-reconfigure nor localectl is available on this system." 10 60
+                fi
                 ;;
             timea)
-                dpkg-reconfigure tzdata
+                if command -v dpkg-reconfigure >/dev/null; then
+                    dpkg-reconfigure tzdata
+                elif command -v localectl >/dev/null; then
+                    whiptail --title "Change Timezone" --msgbox "Please use: localectl set-timezone <timezone>. Example: localectl set-timezone UTC" 10 60
+                else
+                    whiptail --title "Unsupported" --msgbox "Cannot change system timezone: neither dpkg-reconfigure nor localectl is available on this system." 10 60
+                fi
                 ;;
             chown)
                 if [ -d "$DefaultDataPath" ]; then
