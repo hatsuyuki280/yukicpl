@@ -247,7 +247,7 @@ SystemManagementMenu() {
 
         SM_CHOICE=$(whiptail --title "$LangTitle - System Tools" --menu "Select a tool:" 20 60 10 $SM_MENU_OPTIONS 3>&1 1>&2 2>&3)
 
-        if [ $? != 0 ]; then
+        if [ $? -ne 0 ]; then
             return 0
         fi
 
