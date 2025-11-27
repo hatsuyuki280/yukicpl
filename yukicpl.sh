@@ -199,16 +199,16 @@ main()(
                 ShowSystemInfo
                 ;;
             lnmp)
-                msgbox "LNMP function not implemented yet."
+                msgbox "The LNMP feature is under development. Please check back in a future release."
                 ;;
             ok-www)
-                msgbox "OneKey WWW function not implemented yet."
+                msgbox "The OneKey WWW feature is under development. Please check back in a future release."
                 ;;
             cfd)
-                msgbox "Cloudflared function not implemented yet."
+                msgbox "The Cloudflared feature is under development. Please check back in a future release."
                 ;;
             sevpn)
-                msgbox "SoftEther VPN function not implemented yet."
+                msgbox "The SoftEther VPN feature is under development. Please check back in a future release."
                 ;;
             sm-tools)
                 SystemManagementMenu
