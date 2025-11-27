@@ -267,10 +267,21 @@ SystemManagementMenu() {
                 ;;
             bench)
                 if whiptail --title "Warning" --yesno "This will download and run bench.sh from the internet. Continue?" 10 60; then
-                    wget -qO- bench.sh | bash
-                    echo "Press Enter to continue..."
-                    read
-                fi
+                    TMP_BENCH_SH=$(mktemp /tmp/bench.sh.XXXXXX)
+                    # Download using HTTPS from a trusted source (replace URL as needed)
+                    wget -O "$TMP_BENCH_SH" "https://example.com/bench.sh"
+                    if [ $? -ne 0 ]; then
+                        msgbox "Failed to download bench.sh."
+                        rm -f "$TMP_BENCH_SH"
+                    else
+                        whiptail --title "Review Script" --textbox "$TMP_BENCH_SH" 20 70
+                        if whiptail --title "Run Script?" --yesno "Do you want to execute the downloaded bench.sh script?" 10 60; then
+                            bash "$TMP_BENCH_SH"
+                            echo "Press Enter to continue..."
+                            read
+                        fi
+                        rm -f "$TMP_BENCH_SH"
+                    fi
                 ;;
             lang)
                 dpkg-reconfigure locales
