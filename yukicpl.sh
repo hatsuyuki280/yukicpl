@@ -28,10 +28,7 @@ DistChannel="dev"
     source "$TranslateFile"
   } || {
     echo -e "Translate File Not Found at $TranslateFile.\nDownloading..."
-    # If downloading fails (e.g. no network), fall back to basic English or exit nicely in test
-    # Ideally we should just echo "Downloading" but in this environment we might fail.
-    # We will try to download but if it fails we might continue if in test mode or exit.
-
+    # Fall back to internal defaults if download fails
     # Check if wget exists
     if command -v wget >/dev/null 2>&1; then
         wget "https://yukicpl.moeyuki.works/dist/$DistChannel/i18n/yukicpl.$lang" -O "$TranslateFile" 2>/dev/null
