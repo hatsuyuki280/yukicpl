@@ -17,29 +17,29 @@ echo $@ | grep -q -- "--zh" && lang="zh_CN.UTF-8"
 if [ -z "$ConfFileIn" ]; then
     ConfFileIn="/etc/yukicpl/yukicpl.conf"
 fi
-if [ -z "$TraslateFileDir" ]; then
-    TraslateFileDir="/etc/yukicpl"
+if [ -z "$TranslateFileDir" ]; then
+    TranslateFileDir="/etc/yukicpl"
 fi
 
-TraslateFile="$TraslateFileDir/yukicpl.$lang"
+TranslateFile="$TranslateFileDir/yukicpl.$lang"
 DistChannel="dev"
 
-[ -f "$TraslateFile" ] && {
-    source "$TraslateFile"
+[ -f "$TranslateFile" ] && {
+    source "$TranslateFile"
   } || {
-    echo -e "Translate File Not Found at $TraslateFile.\nDownloading..."
+    echo -e "Translate File Not Found at $TranslateFile.\nDownloading..."
     # If downloading fails (e.g. no network), fall back to basic English or exit nicely in test
     # Ideally we should just echo "Downloading" but in this environment we might fail.
     # We will try to download but if it fails we might continue if in test mode or exit.
 
     # Check if wget exists
     if command -v wget >/dev/null 2>&1; then
-        wget "https://yukicpl.moeyuki.works/dist/$DistChannel/i18n/yukicpl.$lang" -O "$TraslateFile" 2>/dev/null
+        wget "https://yukicpl.moeyuki.works/dist/$DistChannel/i18n/yukicpl.$lang" -O "$TranslateFile" 2>/dev/null
     fi
 
     # Check again
-    if [ -f "$TraslateFile" ]; then
-        source "$TraslateFile"
+    if [ -f "$TranslateFile" ]; then
+        source "$TranslateFile"
     else
         echo "Failed to download translation file. Using internal defaults if available (not implemented yet)."
         # Minimal fallback
@@ -54,7 +54,7 @@ DistChannel="dev"
         LangFunctionListOneKeyWWW="OneKey WWW"
         LangFunctionListCloudflared="Cloudflared"
         LangFunctionListSoftEtherVPN="SoftEther VPN"
-        LangFunctionListSystemManagermentTools="System Tools"
+        LangFunctionListSystemManagementTools="System Tools"
         LangFunctionListNginxStreamingModule="Nginx Streaming"
         LangFunctionListMonaStreamingModule="Mona Streaming"
         LangFunctionSelectScreenMsg="Select functions"
@@ -104,7 +104,7 @@ Init()(
                       ok-www $LangFunctionListOneKeyWWW 0\
                       cfd $LangFunctionListCloudflared 0\
                       sevpn $LangFunctionListSoftEtherVPN 0\
-                      sm-tools $LangFunctionListSystemManagermentTools 0\
+                      sm-tools $LangFunctionListSystemManagementTools 0\
                     "
         selectedFunctionList="$(whiptail --title "$LangTitle" --ok-button "$LangOkButton" --nocancel --checklist "$LangFunctionSelectScreenMsg" 25 50 17 $functionList 3>&1 1>&2 2>&3)"
 
@@ -183,7 +183,7 @@ main()(
         MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS ok-www \"$LangFunctionListOneKeyWWW\""
         MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS cfd \"$LangFunctionListCloudflared\""
         MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS sevpn \"$LangFunctionListSoftEtherVPN\""
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS sm-tools \"$LangFunctionListSystemManagermentTools\""
+        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS sm-tools \"$LangFunctionListSystemManagementTools\""
 
         # Add Exit option
         MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS exit \"$LangExit\""
