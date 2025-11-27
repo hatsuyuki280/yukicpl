@@ -236,16 +236,16 @@ ShowSystemInfo() {
 
 SystemManagementMenu() {
     while true; do
-        SM_MENU_OPTIONS=""
-        SM_MENU_OPTIONS="$SM_MENU_OPTIONS tmgr \"System Status (htop)\""
-        SM_MENU_OPTIONS="$SM_MENU_OPTIONS bench \"Performance Test (bench.sh)\""
-        SM_MENU_OPTIONS="$SM_MENU_OPTIONS lang \"Change System Language\""
-        SM_MENU_OPTIONS="$SM_MENU_OPTIONS timea \"Change System Timezone\""
-        SM_MENU_OPTIONS="$SM_MENU_OPTIONS chown \"Reset Website Permissions\""
-        SM_MENU_OPTIONS="$SM_MENU_OPTIONS clean \"Server Cleanup (Dangerous)\""
-        SM_MENU_OPTIONS="$SM_MENU_OPTIONS back \"Back to Main Menu\""
+        SM_MENU_OPTIONS=()
+        SM_MENU_OPTIONS+=("tmgr" "System Status (htop)")
+        SM_MENU_OPTIONS+=("bench" "Performance Test (bench.sh)")
+        SM_MENU_OPTIONS+=("lang" "Change System Language")
+        SM_MENU_OPTIONS+=("timea" "Change System Timezone")
+        SM_MENU_OPTIONS+=("chown" "Reset Website Permissions")
+        SM_MENU_OPTIONS+=("clean" "Server Cleanup (Dangerous)")
+        SM_MENU_OPTIONS+=("back" "Back to Main Menu")
 
-        SM_CHOICE=$(whiptail --title "$LangTitle - System Tools" --menu "Select a tool:" 20 60 10 $SM_MENU_OPTIONS 3>&1 1>&2 2>&3)
+        SM_CHOICE=$(whiptail --title "$LangTitle - System Tools" --menu "Select a tool:" 20 60 10 "${SM_MENU_OPTIONS[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             return 0
