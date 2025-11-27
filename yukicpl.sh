@@ -168,25 +168,25 @@ main()(
         # Build Main Menu
         # We can dynamically build this based on installed modules, but for now fixed list
 
-        MAIN_MENU_OPTIONS=""
+        MAIN_MENU_OPTIONS=()
         # Basic options always available
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS sysinfo \"System Information\""
+        MAIN_MENU_OPTIONS+=("sysinfo" "System Information")
 
         # Check configured functions (simple check for now)
         # In a real scenario, we would check if module is installed.
         # Here we just show the menu items.
 
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS lnmp \"$LangFunctionListLNMP\""
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS ok-www \"$LangFunctionListOneKeyWWW\""
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS cfd \"$LangFunctionListCloudflared\""
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS sevpn \"$LangFunctionListSoftEtherVPN\""
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS sm-tools \"$LangFunctionListSystemManagementTools\""
+        MAIN_MENU_OPTIONS+=("lnmp" "$LangFunctionListLNMP")
+        MAIN_MENU_OPTIONS+=("ok-www" "$LangFunctionListOneKeyWWW")
+        MAIN_MENU_OPTIONS+=("cfd" "$LangFunctionListCloudflared")
+        MAIN_MENU_OPTIONS+=("sevpn" "$LangFunctionListSoftEtherVPN")
+        MAIN_MENU_OPTIONS+=("sm-tools" "$LangFunctionListSystemManagermentTools")
 
         # Add Exit option
-        MAIN_MENU_OPTIONS="$MAIN_MENU_OPTIONS exit \"$LangExit\""
+        MAIN_MENU_OPTIONS+=("exit" "$LangExit")
 
-        # eval is needed to expand MAIN_MENU_OPTIONS correctly with quotes
-        CHOICE=$(eval whiptail --title \"$LangTitle\" --menu \"$LangMainMenuMsg\" 25 78 15 $MAIN_MENU_OPTIONS 3>&1 1>&2 2>&3)
+        # Use array expansion to safely pass options to whiptail
+        CHOICE=$(whiptail --title "$LangTitle" --menu "$LangMainMenuMsg" 25 78 15 "${MAIN_MENU_OPTIONS[@]}" 3>&1 1>&2 2>&3)
 
         exitstatus=$?
         if [ $exitstatus != 0 ]; then
