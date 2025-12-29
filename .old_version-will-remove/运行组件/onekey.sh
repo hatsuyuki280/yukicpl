@@ -11,7 +11,7 @@ PASS=$8     ##数据库密码
 
 
 echo " $FLAG" | grep -q ' -flag.on' || {
-    
+
 
 
 

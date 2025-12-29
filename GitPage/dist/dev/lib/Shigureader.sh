@@ -1,3 +1,4 @@
+#!/bin/bash
 pre_install(){
     ## 提升权限
     sudo -i

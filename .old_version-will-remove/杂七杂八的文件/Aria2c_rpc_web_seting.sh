@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 apt install -y aria2    ##安装Aria2
 
