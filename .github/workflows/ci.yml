@@ -1,0 +1,16 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: '.'
+          # Ignore false positives mostly due to external sourcing and whiptail usage
+          ignore: 'SC2154,SC2034,SC1090,SC1091,SC2086,SC2015,SC2028'
+          exclude: './.old_version-will-remove'

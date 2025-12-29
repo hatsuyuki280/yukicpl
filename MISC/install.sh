@@ -7,10 +7,10 @@ UpdatedDate='20210721'
 test -a /usr/bin/sudo || sudo() (su -c "$@")
 full=0
 lang="zh_CN.UTF-8"
-echo $@ | grep -q -- "--full" && full=1
-echo $@ | grep -q -- "--ja" && lang="ja_JP.UTF-8"
-echo $@ | grep -q -- "--en" && lang="C.UTF-8"
-echo $@ | grep -q -- "--zh" && lang="zh_CN.UTF-8"
+echo "$*" | grep -q -- "--full" && full=1
+echo "$*" | grep -q -- "--ja" && lang="ja_JP.UTF-8"
+echo "$*" | grep -q -- "--en" && lang="C.UTF-8"
+echo "$*" | grep -q -- "--zh" && lang="zh_CN.UTF-8"
 DistChannel="dev"
 
 ###
