@@ -2,7 +2,8 @@
 
 ## Language
 This project prioritizes Chinese.
-Japanese is the default language for Issues, PRs, and Documentation.
+Chinese is the default language for Issues, PRs, and Documentation.
+Japanese also can use as secondary
 
 ## CI/CD
 All submissions must successfully pass CI/CD.
