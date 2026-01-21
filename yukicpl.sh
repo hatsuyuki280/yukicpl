@@ -102,7 +102,7 @@ while getopts ":ht" opt; do
       ;;
   esac
 done
-echo $@ | grep -q -- "--full-install" && full=1
+echo "$*" | grep -q -- "--full-install" && full=1
 
 ###
 # Exec Main Method

@@ -95,7 +95,7 @@ while true; do
     test -z "$CMD" && continue ## 输入命令为空
     type -t "$CMD" | grep -q function || {
         echo "命令 $CMD 没找到，查看帮助请输入 help"
-        continue 
+        continue
     }
     ## 测试模式下不实际执行命令，而是显示命令内容
     if [ -n "$TEST" ] ; then

@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 
 ##利用一键脚本配置docker
@@ -51,7 +51,7 @@ cat /etc/nginx/nginx.conf | grep -q -E 'close' && {
                 default upgrade;
                 '' close;
             }
-        
+
 
 OOO
     cat >> /etc/nginx/site-enable/$name.conf << OOO
@@ -80,4 +80,3 @@ OOO
 
 ##删除所有镜像
 # docker rmi $(docker images -q)
-

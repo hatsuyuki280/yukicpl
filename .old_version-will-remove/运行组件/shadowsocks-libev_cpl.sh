@@ -32,7 +32,7 @@ setup()(    ##执行安装操作&进行设置
     } || {
     ture
     }
-    test 
+    test
     echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  | sudo tee /etc/apt/sources.list.d/stretch-backports.list
     apt update
     sudo apt install -y shadowsocks-libev simple-obfs -t  stretch-backports
@@ -91,7 +91,7 @@ while true; do
     test -z "$CMD" && continue ## 输入命令为空
     type -t "$CMD" | grep -q function || {
         echo "命令 $CMD 没找到，查看帮助请输入 help"
-        continue 
+        continue
     }
     ## 测试模式下不实际执行命令，而是显示命令内容
     if [ -n "$TEST" ] ; then

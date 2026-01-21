@@ -1,5 +1,5 @@
 #!/bin/bash
-##雪次元服务器管理面板位于 
+##雪次元服务器管理面板位于
 ## 注： xxx()( yyyy; ) 或 xxx(){ yyyy; } 表示定义 bash 函数，函数名 xxx，函数内容为执行 yyyy
 ##     其中 圆括号版是在新建 bash 里执行里边的命令，而花括号版是在当前 bash 里执行
 
@@ -71,7 +71,7 @@ test -e ~/.yukicpl/yukicpl.conf || {    ##启动检测
         >'
         read -e input_5
         test -z "$input_5" && {
-            input_5="/yuki/data/db"        
+            input_5="/yuki/data/db"
         }
     }
     echo 设置到此为止
@@ -195,7 +195,7 @@ add()(      ##添加新站点
                             echo "您希望创建的域名 $DN 不符合格式，请检查后重试，或检查本面板设置是否正确"
                             exit    ##返回待机
                         }
-                }  
+                }
             } || {  ##不合法的无效输入
                 echo "您输入的域名 $DN 似乎不符合格式"
                 }
@@ -321,7 +321,7 @@ sset()(     ##手动设置站点配置Nginx文件（未完成）
             echo  取消修改
             return
         }
-    
+
 
 )
 
@@ -505,7 +505,7 @@ addsql()( ##手动添加一个数据库
             PASSWORD=$( head -c 22 /dev/urandom | base64 | head -c 20 )
         }
         mysql -e "create user '$USERNAME'@localhost identified by '$PASSWORD';"
-    } 
+    }
     echo $(mysql -e 'show databases') | grep -q -E "$DATABASENAME_" && {
         DATABASENAME=$DATABASENAME_
     } || {
@@ -613,7 +613,7 @@ php()(
 
 
 ini()(      ##打开php.ini
-    echo 查看 php.ini 
+    echo 查看 php.ini
     nano $PI
 )
 
@@ -630,7 +630,7 @@ onek()(     ##网站一键包
     |         * 关闭服务器*            * 功能开发中             * 卸载SS服务端* |
     |         * 修改设置               * 功能开发中       back  * 返回主菜单    |
      ==========================================================================='
-    read -e -p "请选择你需要的  >" 
+    read -e -p "请选择你需要的  >"
 )
 
 live()(     ##开启直播服务器
@@ -642,7 +642,7 @@ live()(     ##开启直播服务器
             echo -e 'deb http://ftp.debian.org/debian/ stretch-backports main \ndeb-src http://ftp.debian.org/debian/ stretch-backports main'  > /etc/apt/sources.list.d/stretch-backports.list
             apt update
             apt install -y libnginx-mod-rtmp -t stretch-backports
-        } 
+        }
     }
         rm $NGSR/yukicpl_check_point/.liveadd.tmp
         read -e -p "是否需要同时直播至其他站点？[y/N]"   SL
@@ -650,7 +650,7 @@ live()(     ##开启直播服务器
             while test -z "$live_url" ; do  ##检查$SITE变量是否存在(不存在执行)
                 echo "请输入需要转播的直播站点（rtmp协议，格式如下）"
                 echo "(直接从直播地址的域名开始)live.example.com/直播码(直播密钥)"
-                read -e live_url           
+                read -e live_url
                 echo "$live_url" | grep -q -E '^[.a-zA-Z0-9-\/]$' && { ##合法的有效域名
                 echo "push rtmp://$live_url;">>$NGSR/yukicpl_check_point/.liveadd.tmp
                     } || {  ##不合法的
@@ -675,7 +675,7 @@ rtmp {
            $live_url_ok
           }
     }
-}  
+}
 OOO
     ##修改nginx的配置为[可直播]
     test -e $NGSR/yukicpl_check_point/.livesite.conf || {  ##检查直播网站文件是否存在
@@ -816,7 +816,7 @@ dnc()(   ##更换域名
 
 tmgr()(     ##查看系统状态
     echo 查看系统状态
-    ## 检测 htop 
+    ## 检测 htop
     which htop >/dev/null || apt install -y htop
     ## 执行~~
     htop
@@ -843,7 +843,7 @@ _vpntest()(
         echo 更新SS控制面板
         wget ~/.yukicpl/shadowsocks-libev_cpl.sh https://raw.githubusercontent.com/hatsuyuki280/yukicpl/master/%E8%BF%90%E8%A1%8C%E7%BB%84%E4%BB%B6/shadowsocks-libev_cpl.sh
         chmod +x ~/.yukicpl/tool/shadowsocks-libev_cpl.sh
-    } 
+    }
     test $vpn_type = "sstp" && {
         echo "sstp~"
         echo 你们等着吧。。。。sstp。。。还没简化到能随手使用。。。。。所以这里只是个样子。。。
@@ -853,7 +853,7 @@ _vpntest()(
             vpn_type = "ss"
         }
 
-    } 
+    }
 )
 
 _check_nginx(){
@@ -867,7 +867,7 @@ _check_mysql()(
     test "$Sqlt" = "Y" && {
         which mysql >/dev/null || {
             echo 如果mysql服务器未安装将会自动进行安装
-            test 
+            test
             apt install -y mysql-server
             ##      这里其实打算修改数据库的存储路径的
             ##sqls
@@ -920,7 +920,7 @@ while true; do
     test -z "$CMD" && continue ## 输入命令为空
     type -t "$CMD" | grep -q function || {
         echo "命令 $CMD 没找到，查看帮助请输入 help"
-        continue 
+        continue
     }
     ## 测试模式下不实际执行命令，而是显示命令内容
     if [ -n "$TEST" ] ; then
